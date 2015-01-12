@@ -1,2 +1,2 @@
-# SPA CEOLA MONIN
+# SPA - CEOLA MONIN
 Projet SPA 
