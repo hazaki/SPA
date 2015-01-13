@@ -26,16 +26,16 @@ int main()
     }
 	printf("using %s as device for sniffing\n",dev);
 
-    if((pdes=pcap_open_live(dev,1514,IFF_PROMISC,1000,errbuf)) == NULL)
-    {
-	    fprintf(stderr,"unable to open descriptor : %s\n",errbuf);
-	    exit(-1);
-	}
-
 	if(pcap_lookupnet(dev,&net,&mask,errbuf)==-1)
 	{
 		fprintf(stderr,"unable to lookup net and mask : %s\n",errbuf);
 		exit(-1);
+	}
+
+    if((pdes=pcap_open_live(dev,1514,IFF_PROMISC,1000,errbuf)) == NULL)
+    {
+	    fprintf(stderr,"unable to open descriptor : %s\n",errbuf);
+	    exit(-1);
 	}
 	
 	if(pcap_compile(pdes,&bp,filter,0x100,mask)<0) 
