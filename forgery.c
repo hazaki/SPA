@@ -19,10 +19,11 @@ int main(int argc, char ** argv)
     if (l == NULL){
         libnet_destroy(l);
         printf("Erreur descr : %s\n", errbuf);
-        return -1;}
+        return -1;
+    }
 
     // Création de l'entête UDP
-    
+
     libnet_ptag_t udp = 0;
     u_int32_t dst_ip = libnet_name2addr4(l,argv[2],LIBNET_DONT_RESOLVE);
     if (dst_ip == -1)

@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Couldn't find default device: %s\n", errbuf);
 		return(2);
 	}
-
+ 
 	/* Find the properties for the device */
 	if (pcap_lookupnet(dev, &net, &mask, errbuf) == -1) {
 		fprintf(stderr, "Couldn't get netmask for device %s: %s\n", dev, errbuf);
