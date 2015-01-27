@@ -1,7 +1,7 @@
-all: serveur
+all: server
 
-serveur: main.o receive.o encrypt_decrypt.o
-	gcc main.o receive.o -lpcap encrypt_decrypt.o -lssl -lcrypto -o serveur
+server: main.o receive.o encrypt_decrypt.o
+	gcc main.o receive.o -lpcap encrypt_decrypt.o -lssl -lcrypto -o server
 
 main.o: main.c receive.h
 	gcc -c main.c

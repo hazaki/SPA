@@ -78,6 +78,12 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	int decrypt_len = decrypt(payload, h->len - (SIZE_ETHERNET + size_ip + size_udp), key, iv, decrypttext);
 	decrypttext[decrypt_len]='\0';
 	printf("%s\n",decrypttext);
+
+	char command[128];
+	sprintf(command, "iptables -A FORWARD -s %s -p %d", inet_ntoa(ip->ip_src), atoi(decrypttext));
+	system(command);
+	system("iptables -L");
+	system("iptables -F");
 }
 
 void receive()
