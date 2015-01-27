@@ -1,44 +1,30 @@
-#include <stdio.h>
-#include <libnet.h>
-#include <unistd.h>
-#include <string.h>
-#include <stdint.h>
-#include <sys/types.h>
+#include "forgery.h"
 
-
-char text[] = "wxyz";
-
-int main(int argc, char ** argv)
+void forge(char * interface, char * ip_dest, char * text)
 {
 
     // Vérfication des arguments
 
-    if(argc != 3)
-    {
-        printf("Usage : ./forgery interface ip_dest\n");
-        return(-1);
-    }
-
     libnet_t *l = NULL;
     char errbuf[LIBNET_ERRBUF_SIZE];
-    l = libnet_init(LIBNET_RAW4,argv[1],errbuf);
+    l = libnet_init(LIBNET_RAW4,interface,errbuf);
     if (l == NULL){
         libnet_destroy(l);
         printf("Erreur descr : %s\n", errbuf);
-        return -1;
+        exit(-1);
     }
 
     // Création de l'entête UDP
 
     libnet_ptag_t udp = 0;
-    u_int32_t dst_ip = libnet_name2addr4(l,argv[2],LIBNET_DONT_RESOLVE);
+    u_int32_t dst_ip = libnet_name2addr4(l,ip_dest,LIBNET_DONT_RESOLVE);
     if (dst_ip == -1)
     {
         printf("Erreur ip dst\n");
         libnet_destroy(l);
-        return -1;
+        exit(-1);
     }
-    
+
     udp = libnet_build_udp(
       12345, /* source port */
       12346, /* destination port */
@@ -52,11 +38,11 @@ int main(int argc, char ** argv)
     if (udp == -1)
     {
       fprintf(stderr, "Can't build UDP header: %s\n", libnet_geterror(l));
-      return -1;
+      exit(-1);
     }
-    
-    // Création de l'entête IP    
-    
+
+    // Création de l'entêteP
+
     libnet_ptag_t ip = 0;
     ip = libnet_autobuild_ipv4(
         LIBNET_IPV4_H + LIBNET_UDP_H,
@@ -67,7 +53,7 @@ int main(int argc, char ** argv)
     {
         printf("erreur ip\n");
         libnet_destroy(l);
-        return -1;
+        exit(-1);
     }
     /*On envoie le paquet */
 
@@ -77,6 +63,4 @@ int main(int argc, char ** argv)
 
     /*On détruit le descripteur*/
     libnet_destroy(l);
-
-    return 0;
 }
