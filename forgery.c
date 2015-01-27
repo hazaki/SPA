@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <libnet.h>
 #include <unistd.h>
+#include <string.h>
+#include <stdint.h>
+#include <sys/types.h>
+
+
+char text[] = "wxyz";
 
 int main(int argc, char ** argv)
 {
@@ -36,10 +42,10 @@ int main(int argc, char ** argv)
     udp = libnet_build_udp(
       12345, /* source port */
       12346, /* destination port */
-      LIBNET_UDP_H + LIBNET_UDP_DNSV4_H /*add the payload's length*/, /* packet length */
+      LIBNET_UDP_H + sizeof(text) /*add the payload's length*/, /* packet length */
       0, /* checksum */
-      NULL, /* payload */
-      0, /* payload size */
+      (u_int8_t*)text, /* payload */
+      sizeof(text), /* payload size */
       l, /* libnet handle */
       0); /* libnet id */
 
