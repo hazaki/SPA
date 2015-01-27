@@ -15,13 +15,16 @@ int main(int argc, char ** argv)
 		return -1;
 	}
 
-	char * num_port = argv[1];
+	unsigned char * num_port = argv[1];
 	char * interface = argv[2];
 	char * dest_ip = argv[3];
-	char cyphertext[128];
 
-	encrypt(num_port, strlen(num_port), key, iv, cyphertext);
-	forge(interface, dest_ip, cyphertext);
+	unsigned char cipherpayload[128 + 32];
+        
+	int payload_len = get_ciphered_payload(num_port,key,iv, cipherpayload);
 
+	forge(interface, dest_ip, cipherpayload, payload_len);
+	
 	return 0;
+	
 }

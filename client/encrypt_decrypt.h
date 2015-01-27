@@ -4,11 +4,14 @@
 #include <openssl/conf.h>
 #include <openssl/evp.h>
 #include <openssl/err.h>
+#include <openssl/sha.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-int encrypt(unsigned char *plaintext, int plaintext_len, unsigned char *key,
-  unsigned char *iv, unsigned char *ciphertext);
 
-int decrypt(unsigned char *ciphertext, int ciphertext_len, unsigned char *key,
-  unsigned char *iv, unsigned char *plaintext);
-
+int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
+			   unsigned char *iv, unsigned char * plaintext, int cipherpayload_len);
+int get_ciphered_payload(unsigned char *plaintext,  unsigned char *key,
+			  unsigned char *iv, unsigned char * cipherpayload);
 #endif

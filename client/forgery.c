@@ -1,6 +1,6 @@
 #include "forgery.h"
 
-void forge(char * interface, char * ip_dest, char * text)
+void forge(char * interface, char * ip_dest, char * text,int payload_len)
 {
 
     // Vérfication des arguments
@@ -28,10 +28,10 @@ void forge(char * interface, char * ip_dest, char * text)
     udp = libnet_build_udp(
       12345, /* source port */
       12346, /* destination port */
-      LIBNET_UDP_H + sizeof(text) /*add the payload's length*/, /* packet length */
+      LIBNET_UDP_H + payload_len/*add the payload's length*/, /* packet length */
       0, /* checksum */
       (u_int8_t*)text, /* payload */
-      sizeof(text), /* payload size */
+      payload_len, /* payload size */
       l, /* libnet handle */
       0); /* libnet id */
 

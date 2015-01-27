@@ -6,6 +6,11 @@ void handleErrors(void)
   abort();
 }
 
+/********************************/
+/****Cryp/Uncrypt whit AES*******/
+/********************************/
+
+
 int encrypt(unsigned char *plaintext, int plaintext_len, unsigned char *key,
   unsigned char *iv, unsigned char *ciphertext)
 {
@@ -80,5 +85,85 @@ int decrypt(unsigned char *ciphertext, int ciphertext_len, unsigned char *key,
 
   /* Clean up */
   EVP_CIPHER_CTX_free(ctx);
+  return plaintext_len;
+}
+
+/********************************/
+/*********HASH WITH SHA256*******/
+/********************************/
+
+void print_hash(unsigned char hash[])
+{
+   int idx;
+   for (idx=0; idx < 32; idx++)
+      printf("%02x",hash[idx]);
+   printf("\n");
+}
+
+unsigned char* sha256(unsigned char text[])
+{
+  unsigned char *hash = malloc(32 * sizeof(unsigned char));
+   int idx;
+   SHA256_CTX ctx;
+
+   SHA256_Init(&ctx);
+   SHA256_Update(&ctx,text,strlen(text));
+   SHA256_Final(hash,&ctx);
+   
+   return hash;
+}
+/* int main(){ */
+/*   unsigned char test[] = {"test"}; */
+/*   unsigned char * hash = sha256(test); */
+/*   print_hash(hash); */
+/*   free(hash); */
+/* } */
+
+
+/********************************/
+/******Create correct payload****/
+/********************************/
+
+int get_ciphered_payload(unsigned char *plaintext,  unsigned char *key,
+				    unsigned char *iv, unsigned char * cipherpayload)
+{
+  unsigned char ciphertext[128];
+  
+  int plaintext_len = strlen(plaintext );
+  int cipher_len = encrypt(plaintext,plaintext_len, key,iv,ciphertext);
+  unsigned char * cipherhash = sha256(ciphertext);
+  
+  memcpy(cipherpayload, ciphertext, cipher_len);
+  memcpy(cipherpayload + cipher_len, cipherhash, 32);
+
+  return cipher_len +32;
+
+}
+int check_hash(unsigned char *ciphertext, unsigned char *hash){
+  unsigned char * ciphertext_hash = sha256(ciphertext);
+  for(int i = 0; i< 32; i++){
+    if(ciphertext_hash[i] != hash[i])
+      return 0;
+  }
+  return 1;
+      
+}
+int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
+			   unsigned char *iv, unsigned char * plaintext, int cipherpayload_len)
+{
+  int ciphertext_len = cipherpayload_len -32;
+  unsigned char ciphertext[ciphertext_len];
+  unsigned char hash[32];
+  memcpy(ciphertext, cipherpayload, ciphertext_len);
+
+  memcpy(hash, cipherpayload + ciphertext_len, 32);
+
+  if (!check_hash(ciphertext, hash)){
+    fprintf(stderr, "Invalid authentication");
+    exit(-1);
+  }
+  
+  int plaintext_len = decrypt(ciphertext,ciphertext_len, key,iv,plaintext);
+  
   return plaintext_len;
 }

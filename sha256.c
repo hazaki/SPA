@@ -30,3 +30,4 @@ unsigned char* sha256(unsigned char text[])
 /*   print_hash(hash); */
 /*   free(hash); */
 /* } */
+

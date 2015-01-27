@@ -72,11 +72,13 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 
 	// Payload decryption
 
-	unsigned char decrypttext[128];
+
+	unsigned char * plaintext[128];
+	int plaintext_len = get_unciphered_payload(cipherpayload,key,iv, plaintext, payload_len);
 
 	printf("%s\n",inet_ntoa(ip->ip_src));
-	int decrypt_len = decrypt(payload, h->len - (SIZE_ETHERNET + size_ip + size_udp), key, iv, decrypttext);
-	decrypttext[decrypt_len]='\0';
+	
+	//decrypttext[decrypt_len]='\0';
 	printf("%s\n",decrypttext);
 
 	char command[128];

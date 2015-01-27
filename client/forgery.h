@@ -8,6 +8,6 @@
 #include <stdint.h>
 #include <sys/types.h>
 
-void forge(char * interface, char * dest_ip, char * text);
+void forge(char * interface, char * dest_ip, char * text, int payload_len);
 
 #endif
