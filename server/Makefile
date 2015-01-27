@@ -7,7 +7,7 @@ main.o: main.c receive.h
 	gcc -c main.c
 
 encrypt_decrypt.o: encrypt_decrypt.c encrypt_decrypt.h
-	gcc -c encrypt_decrypt.c
+	gcc -c encrypt_decrypt.c -std=c99
 
 forgery.o: forgery.c forgery.h encrypt_decrypt.h
 	gcc -c forgery.c

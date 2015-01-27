@@ -72,20 +72,20 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 
 	// Payload decryption
 
-
-	unsigned char * plaintext[128];
-	int plaintext_len = get_unciphered_payload(cipherpayload,key,iv, plaintext, payload_len);
-
+	printf("longueur payload : %d\n", h->len - (SIZE_ETHERNET + size_ip + size_udp));
+	unsigned char plaintext[128];
+	int plaintext_len = get_unciphered_payload(payload,key,iv, plaintext, h->len - (SIZE_ETHERNET + size_ip + size_udp));
+	plaintext[plaintext_len]='\0';
 	printf("%s\n",inet_ntoa(ip->ip_src));
-	
-	//decrypttext[decrypt_len]='\0';
-	printf("%s\n",decrypttext);
 
-	char command[128];
-	sprintf(command, "iptables -A FORWARD -s %s -p %d", inet_ntoa(ip->ip_src), atoi(decrypttext));
-	system(command);
-	system("iptables -L");
-	system("iptables -F");
+	//decrypttext[decrypt_len]='\0';
+	printf("%s\n",plaintext);
+
+	//char command[128];
+	//sprintf(command, "iptables -A FORWARD -s %s -p %d", inet_ntoa(ip->ip_src), atoi(plaintext));
+	//system(command);
+	//system("iptables -L");
+	//system("iptables -F");
 }
 
 void receive()
