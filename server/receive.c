@@ -1,6 +1,4 @@
-#include <pcap.h>
-#include <stdio.h>
-#include <netinet/in.h>
+#include "receive.h"
 
 
 #define SIZE_ETHERNET 14
@@ -43,7 +41,8 @@ struct sniff_udp {
 	u_short uh_sum;		/* datagram checksum */
 };
 
-
+unsigned char *key = "01234567890123456789012345678901";
+unsigned char *iv = "01234567890123456";
 
 void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 {
@@ -52,7 +51,7 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	const struct sniff_ethernet *ethernet; /* The ethernet header */
 	const struct sniff_ip *ip; /* The IP header */
 	const struct sniff_udp *udp; /* The TCP header */
-	const char *payload; /* Packet payload */
+	unsigned char *payload; /* Packet payload */
 
 	u_int size_ip;
 	u_int size_udp;
@@ -70,11 +69,18 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 		return;
 	}
 	payload = (u_char *)(packet + SIZE_ETHERNET + size_ip + size_udp);
-	printf("%s\n", payload);
+
+	// Payload decryption
+
+	unsigned char decrypttext[128];
+
 	printf("%s\n",inet_ntoa(ip->ip_src));
+	int decrypt_len = decrypt(payload, h->len - (SIZE_ETHERNET + size_ip + size_udp), key, iv, decrypttext);
+	decrypttext[decrypt_len]='\0';
+	printf("%s\n",decrypttext);
 }
 
-int main(int argc, char *argv[])
+void receive()
 {
 	pcap_t *handle;			  /* Session handle */
 	char *dev;			  /* The device to sniff on */
@@ -90,37 +96,36 @@ int main(int argc, char *argv[])
 	dev = pcap_lookupdev(errbuf);
 	if (dev == NULL) {
 		fprintf(stderr, "Couldn't find default device: %s\n", errbuf);
-		return -1;
+		exit(-1);
 	}
 
 	/* Find the properties for the device */
 	if (pcap_lookupnet(dev, &net, &mask, errbuf) == -1) {
 		fprintf(stderr, "Couldn't get netmask for device %s: %s\n", dev, errbuf);
-		return -1;
+		exit(-1);
 	}
 
 	/* Open the session in promiscuous mode */
 	handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
 	if (handle == NULL) {
 		fprintf(stderr, "Couldn't open device %s: %s\n", dev, errbuf);
-		return -1;
+		exit(-1);
 	}
 
 	/* Compile and apply the filter */
 	if (pcap_compile(handle, &fp, filter_exp, 0, mask) == -1) {
 		fprintf(stderr, "Couldn't parse filter %s: %s\n", filter_exp, pcap_geterr(handle));
-		return -1;
+		exit(-1);
 	}
 
 	if (pcap_setfilter(handle, &fp) == -1) {
 		fprintf(stderr, "Couldn't install filter %s: %s\n", filter_exp, pcap_geterr(handle));
-		return -1;
+		exit(-1);
 	}
 
 	if (pcap_loop(handle,-1,callback,packet) < 0)
 	{
 		fprintf(stderr,"pcap_loop : %s\n",pcap_geterr(handle));
-		return -1;
+		exit(-1);
 	}
-	return 0;
 }
