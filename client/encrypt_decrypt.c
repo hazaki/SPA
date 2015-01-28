@@ -131,6 +131,8 @@ int get_ciphered_payload(unsigned char *plaintext,  unsigned char *key,
   
   int plaintext_len = strlen(plaintext );
   int cipher_len = encrypt(plaintext,plaintext_len, key,iv,ciphertext);
+  ciphertext[cipher_len]='\0';
+
   unsigned char * cipherhash = sha256(ciphertext);
   
   memcpy(cipherpayload, ciphertext, cipher_len);
@@ -157,7 +159,7 @@ int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
   memcpy(ciphertext, cipherpayload, ciphertext_len);
 
   memcpy(hash, cipherpayload + ciphertext_len, 32);
-
+  ciphertext[ciphertext_len]='\0';
   if (!check_hash(ciphertext, hash)){
     fprintf(stderr, "Invalid authentication");
     exit(-1);
