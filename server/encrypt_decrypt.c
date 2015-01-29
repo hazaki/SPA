@@ -149,11 +149,10 @@ int check_hash(unsigned char *ciphertext, unsigned char *hash){
     
 }
 int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
-			   unsigned char *iv, unsigned char * plaintext, int cipherpayload_len)
+			   unsigned char *iv, unsigned char * plaintext, int cipherpayload_len, unsigned char * hash)
 {
   int ciphertext_len = cipherpayload_len -32;
   unsigned char ciphertext[ciphertext_len];
-  unsigned char hash[32];
   memcpy(ciphertext, cipherpayload, ciphertext_len);
 
   memcpy(hash, cipherpayload + ciphertext_len, 32);
