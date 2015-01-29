@@ -73,10 +73,11 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	payload = (u_char *)(packet + SIZE_ETHERNET + size_ip + size_udp);
 
 	// Payload decryption
-
+	
+	unsigned char hash[32];
 	printf("longueur payload : %d\n", h->len - (SIZE_ETHERNET + size_ip + size_udp));
 	unsigned char plaintext[128];
-	int plaintext_len = get_unciphered_payload(payload,key,iv, plaintext, h->len - (SIZE_ETHERNET + size_ip + size_udp));
+	int plaintext_len = get_unciphered_payload(payload,key,iv, plaintext, h->len - (SIZE_ETHERNET + size_ip + size_udp), hash);
 	plaintext[plaintext_len]='\0';
 	
 	//Argument Parsing and TimeStamp Recovering

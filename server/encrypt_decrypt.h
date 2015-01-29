@@ -11,7 +11,7 @@
 
 
 int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
-			   unsigned char *iv, unsigned char * plaintext, int cipherpayload_len);
+			   unsigned char *iv, unsigned char * plaintext, int cipherpayload_len, unsigned char * hash);
 int get_ciphered_payload(unsigned char *plaintext,  unsigned char *key,
 			  unsigned char *iv, unsigned char * cipherpayload);
 #endif
