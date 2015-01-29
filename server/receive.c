@@ -46,6 +46,8 @@ unsigned char *iv = "01234567890123456";
 
 void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 {
+	//Packet Parsing
+	
 	printf("longueur du paquet : %d\n", h->len);
 
 	const struct sniff_ethernet *ethernet; /* The ethernet header */
@@ -76,10 +78,32 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	unsigned char plaintext[128];
 	int plaintext_len = get_unciphered_payload(payload,key,iv, plaintext, h->len - (SIZE_ETHERNET + size_ip + size_udp));
 	plaintext[plaintext_len]='\0';
+	
+	//Argument Parsing and TimeStamp Recovering
+	
+	char * num_port;
+	char * time;
+	
+	memcpy(num_port, plaintext, plaintext_len - 14);
+	memcpy(time, plaintext + (plaintext_len - 14), 14);
+	
+	int hh, mm, ss, dd, mth, yy;
+	sscanf(time, "%04d%02d%02d%02d%02d%02d", &yy, &mth, &dd, &hh, &mm, &ss);
+	struct tm after_send = {0};
+	after_send.tm_mday = dd;
+	after_send.tm_mon = mth - 1;
+	after_send.tm_year = yy - 1900;
+	after_send.tm_hour = hh;
+	after_send.tm_min = mm;
+	after_send.tm_sec = ss;
+		
+	time_t converted = mktime(&after_send);
+	
+	//Replay detection and Request list update
+	
 	printf("%s\n",inet_ntoa(ip->ip_src));
 
-	//decrypttext[decrypt_len]='\0';
-	printf("%s\n",plaintext);
+
 
 	//char command[128];
 	//sprintf(command, "iptables -A FORWARD -s %s -p %d", inet_ntoa(ip->ip_src), atoi(plaintext));
