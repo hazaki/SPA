@@ -14,4 +14,7 @@ int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
 			   unsigned char *iv, unsigned char * plaintext, int cipherpayload_len);
 int get_ciphered_payload(unsigned char *plaintext,  unsigned char *key,
 			  unsigned char *iv, unsigned char * cipherpayload);
+void print_hash(unsigned char hash[])
+
+
 #endif

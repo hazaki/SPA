@@ -143,12 +143,10 @@ int get_ciphered_payload(unsigned char *plaintext,  unsigned char *key,
 }
 int check_hash(unsigned char *ciphertext, unsigned char *hash){
   unsigned char * ciphertext_hash = sha256(ciphertext);
-  for(int i = 0; i< 32; i++){
-    if(ciphertext_hash[i] != hash[i])
-      return 0;
-  }
-  return 1;
-      
+  if(strcmp(hash,ciphertext_hash)==0)
+    return 1;
+  return 0;
+    
 }
 int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
 			   unsigned char *iv, unsigned char * plaintext, int cipherpayload_len)
