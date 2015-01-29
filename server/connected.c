@@ -14,7 +14,6 @@ void add_request(struct connected *connect, unsigned char * hash,char * ip,
   new_request->hash = hash;
   new_request->ip = ip;
   new_request->port = port;
-  /* new_request->end_time = *((time_t*) malloc(sizeof(time_t))) */;
 				 
   new_request->end_time = time;			 
   
@@ -57,7 +56,6 @@ void del_request(struct connected * connect){
   printf("first %s\n", req->hash);
   connect->first = connect->first->next;
   req->next = NULL;
-  /* free(&req->end_time) */;
   free(req);
   return;
 }
