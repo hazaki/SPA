@@ -22,9 +22,10 @@ struct request{
 struct connected{
   struct request * first;
   int nb_request;
+  int max_request;
 };
 
-void add_request(struct connected *connect, unsigned char * hash,char * ip,
+int add_request(struct connected *connect, unsigned char * hash,char * ip,
 		 int port, time_t time);
 
 struct connected * init_connected();
@@ -32,5 +33,6 @@ struct connected * init_connected();
 void del_request(struct connected * connect);
 
 bool check_already_present(struct connected * connect, unsigned char *hash);
-  
+
+void close_connections(connected * connect);
 #endif
