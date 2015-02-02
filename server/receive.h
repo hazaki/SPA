@@ -7,7 +7,8 @@
 #include <netinet/in.h>
 
 #include "encrypt_decrypt.h"
+#include "connected.h"
 
-void receive();
+void receive(struct connected * connection);
 
 #endif

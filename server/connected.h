@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
-/* #include "encrypt_decrypt.h" */
+#include "encrypt_decrypt.h"
 
 typedef struct request request;
 typedef struct connected connected;
@@ -28,14 +28,14 @@ struct connected{
 int add_request(struct connected *connect, unsigned char * hash,char * ip,
 		 int port, time_t time);
 
-struct connected * init_connected();
+struct connected * init_connected(int max_request);
 
 void del_request(struct connected * connect);
 
 bool check_already_present(struct connected * connect, unsigned char *hash);
 
-<<<<<<< HEAD
-=======
-void close_connections(connected * connect);
->>>>>>> 0d1bd38ca8a32f05611865b33509235c313f7329
+void close_connections(struct connected * connect);
+
+void print_request(struct connected * connect);
+
 #endif

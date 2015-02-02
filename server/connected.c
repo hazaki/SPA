@@ -23,21 +23,21 @@ int add_request(struct connected *connect, unsigned char * hash,char * ip,
 {
   if(connect->nb_request >= connect->max_request)
     return -2;
-  
+
   if(check_already_present(connect,hash))
     return 0;
 
   time_t now = time(NULL);
   if((now + 30 <= time_req)||(time_req <=now))
     return -1;
-  
+
   struct request * new_request = malloc(sizeof(struct request));
   new_request->hash = hash;
   new_request->ip = ip;
   new_request->port = port;
-				 
-  new_request->end_time = time_req;			 
-  
+
+  new_request->end_time = time_req;
+
   if(connect->first ==NULL){
     connect->first = new_request;
     new_request->next = NULL;
@@ -84,9 +84,12 @@ void del_request(struct connected * connect){
 bool check_already_present(struct connected * connect, unsigned char *hash){
   struct request * current = connect->first;
   while(current !=NULL){
-    printf("cmp :%s , %s\n", current->hash, hash);
+
     if ( strcmp(hash, current->hash) ==0){
-      return true;
+      	//print_hash(hash);
+	//print_hash(current->hash);
+	//printf("end time : %s\n", asctime(localtime(&current->end_time)));
+	return true;
     }
     current = current->next;
   }
@@ -97,12 +100,10 @@ void print_requests(struct connected * connect){
   struct request * current = connect->first;
   while(current !=NULL){
     printf("###################################\n");
-    printf("hash : %s\n",current->hash);
-    /* print_hash(current->hash) */;
+    print_hash(current->hash);
     printf("ip : %s\nport : %d\n",current->ip,current->port);
-    printf("end time : %s", asctime(localtime(&current->end_time)));
+    printf("end time : %s\n", asctime(localtime(&current->end_time)));
     current = current->next;
-      
   }
   return;
 }

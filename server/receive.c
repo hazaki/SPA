@@ -47,7 +47,9 @@ unsigned char *iv = "01234567890123456";
 void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 {
 	//Packet Parsing
-	
+
+	struct connected * connection = (connected *)user;
+	print_requests(connection);
 	printf("longueur du paquet : %d\n", h->len);
 
 	const struct sniff_ethernet *ethernet; /* The ethernet header */
@@ -73,23 +75,32 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	payload = (u_char *)(packet + SIZE_ETHERNET + size_ip + size_udp);
 
 	// Payload decryption
-	
+
 	unsigned char hash[32];
-	printf("longueur payload : %d\n", h->len - (SIZE_ETHERNET + size_ip + size_udp));
+	//printf("longueur payload : %d\n", h->len - (SIZE_ETHERNET + size_ip + size_udp));
 	unsigned char plaintext[128];
 	int plaintext_len = get_unciphered_payload(payload,key,iv, plaintext, h->len - (SIZE_ETHERNET + size_ip + size_udp), hash);
 	plaintext[plaintext_len]='\0';
-	
+	print_hash(hash);
 	//Argument Parsing and TimeStamp Recovering
-	
-	char * num_port;
-	char * time;
-	
-	memcpy(num_port, plaintext, plaintext_len - 14);
-	memcpy(time, plaintext + (plaintext_len - 14), 14);
-	
+
+	int len_port = plaintext_len - 14 -2;
+
+	char num_port[len_port];
+	char sec[2];
+	char ctime[14];
+
+	memcpy(num_port, plaintext, len_port);
+	memcpy(sec, plaintext + len_port, 2);
+	memcpy(ctime, plaintext + len_port + 2, 14);
+	num_port[len_port]='\0';
+	sec[2]='\0';
+
+	//printf("num port :%s",num_port);
+	//printf("sec :%s\n",sec);
+
 	int hh, mm, ss, dd, mth, yy;
-	sscanf(time, "%04d%02d%02d%02d%02d%02d", &yy, &mth, &dd, &hh, &mm, &ss);
+	sscanf(ctime, "%04d%02d%02d%02d%02d%02d", &yy, &mth, &dd, &hh, &mm, &ss);
 	struct tm after_send = {0};
 	after_send.tm_mday = dd;
 	after_send.tm_mon = mth - 1;
@@ -97,13 +108,24 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	after_send.tm_hour = hh;
 	after_send.tm_min = mm;
 	after_send.tm_sec = ss;
-		
-	time_t converted = mktime(&after_send);
-	
-	//Replay detection and Request list update
-	
-	printf("%s\n",inet_ntoa(ip->ip_src));
 
+	time_t after_tm = mktime(&after_send);
+
+	//printf("%s", asctime(&after_send));
+
+	//Replay detection and Request list update
+
+	int res = add_request(connection, hash, (char *)inet_ntoa(ip->ip_src), atoi(num_port), after_tm + atoi(sec));
+
+	printf("\n Premier Packet\nhash: ");
+	print_hash(hash);
+	printf("ip : %s\n, port : %s\n, temps:%s\n\n",(char *)inet_ntoa(ip->ip_src),num_port,asctime(&after_send));
+	if(res == 0)
+		printf("Packet Already received (Replay)\n");
+	if(res == -1)
+		printf("Invalid Time\n");
+	if(res == -2)
+		printf("Structure Handling Request is Full\n");
 
 
 	//char command[128];
@@ -113,7 +135,7 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	//system("iptables -F");
 }
 
-void receive()
+void receive(struct connected * connection)
 {
 	pcap_t *handle;			  /* Session handle */
 	char *dev;			  /* The device to sniff on */
@@ -123,7 +145,7 @@ void receive()
 	bpf_u_int32 mask;		  /* Our netmask */
 	bpf_u_int32 net;		  /* Our IP */
 	struct pcap_pkthdr header;	  /* The header that pcap gives us */
-	u_char *packet;			/* The actual packet */
+	u_char *packet;	      		/* The actual packet */
 
 	/* Define the device, eth0 will be taken by default */
 	dev = pcap_lookupdev(errbuf);
@@ -156,9 +178,10 @@ void receive()
 		exit(-1);
 	}
 
-	if (pcap_loop(handle,-1,callback,packet) < 0)
+	if (pcap_loop(handle,-1,callback,(char *)connection) < 0)
 	{
 		fprintf(stderr,"pcap_loop : %s\n",pcap_geterr(handle));
 		exit(-1);
 	}
+	//close_connections(connection);
 }

@@ -143,10 +143,11 @@ int get_ciphered_payload(unsigned char *plaintext,  unsigned char *key,
 }
 int check_hash(unsigned char *ciphertext, unsigned char *hash){
   unsigned char * ciphertext_hash = sha256(ciphertext);
-  if(strcmp(hash,ciphertext_hash)==0)
+
+  if(strncmp(hash,ciphertext_hash,32)==0)
     return 1;
   return 0;
-    
+
 }
 int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
 			   unsigned char *iv, unsigned char * plaintext, int cipherpayload_len, unsigned char * hash)
@@ -161,8 +162,8 @@ int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
     fprintf(stderr, "Invalid authentication");
     exit(-1);
   }
-  
+
   int plaintext_len = decrypt(ciphertext,ciphertext_len, key,iv,plaintext);
-  
+
   return plaintext_len;
 }

@@ -1,7 +1,7 @@
 all: server
 
-server: main.o receive.o encrypt_decrypt.o
-	gcc main.o receive.o -lpcap encrypt_decrypt.o -lssl -lcrypto -o server
+server: main.o receive.o encrypt_decrypt.o connected.o
+	gcc main.o receive.o -lpcap encrypt_decrypt.o -lssl -lcrypto connected.o -o server
 
 main.o: main.c receive.h
 	gcc -c main.c
@@ -9,8 +9,11 @@ main.o: main.c receive.h
 encrypt_decrypt.o: encrypt_decrypt.c encrypt_decrypt.h
 	gcc -c encrypt_decrypt.c -std=c99
 
-forgery.o: forgery.c forgery.h encrypt_decrypt.h
-	gcc -c forgery.c
+receive.o: receive.c receive.h encrypt_decrypt.h connected.h
+	gcc -c receive.c
+
+connected.o: connected.c connected.h 
+	gcc -c connected.c
 
 clean:
 	@rm -f *.o
