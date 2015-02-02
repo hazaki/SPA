@@ -32,5 +32,5 @@ struct connected * init_connected();
 void del_request(struct connected * connect);
 
 bool check_already_present(struct connected * connect, unsigned char *hash);
-  
+
 #endif
