@@ -1,21 +1,42 @@
 #include "connected.h"
 
-struct connected * init_connected(){
+struct connected * init_connected(int max_connections){
   struct connected * connect = malloc(sizeof(struct connected));
   connect->first = NULL;
   connect->nb_request = 0;
+  connect->max_request = max_connections;
   return connect;
 }
 
-void add_request(struct connected *connect, unsigned char * hash,char * ip,
-		 int port, time_t time)
+void close_connections(connected * connect){
+  while(connect->first !=NULL)
+    del_request(connect);
+}
+/*value returned:   meaning:
+  1                 valid connection added in the structure
+  0                 entry already present in the structure 
+  -1                invalid time
+  -2                full
+*/
+int add_request(struct connected *connect, unsigned char * hash,char * ip,
+		 int port, time_t time_req)
 {
+  if(connect->nb_request >= connect->max_request)
+    return -2;
+  
+  if(check_already_present(connect,hash))
+    return 0;
+
+  time_t now = time(NULL);
+  if((now + 30 <= time_req)||(time_req <=now))
+    return -1;
+  
   struct request * new_request = malloc(sizeof(struct request));
   new_request->hash = hash;
   new_request->ip = ip;
   new_request->port = port;
 				 
-  new_request->end_time = time;			 
+  new_request->end_time = time_req;			 
   
   if(connect->first ==NULL){
     connect->first = new_request;
@@ -47,7 +68,7 @@ void add_request(struct connected *connect, unsigned char * hash,char * ip,
     }
   }
   connect->nb_request++;
-  return;
+  return 1;
 }
 
 
@@ -84,39 +105,4 @@ void print_requests(struct connected * connect){
       
   }
   return;
-}
-
-int main(){
-  struct connected * connect = init_connected();
-  time_t now =time(NULL);
-  unsigned char * add1 = "firstadd";
-  add_request(connect,add1, "",12, now);
-  print_requests(connect);
-  printf("####################################\n\n\n");
-  unsigned char * add2 = "secondtadd";
-  add_request(connect,add2, "",13, now -1);
-  print_requests(connect);
-  printf("####################################\n\n\n");
-  unsigned char * add3 = "thirdtadd";
-  add_request(connect,add3, "",14, now -2); 
-  print_requests(connect);
-  printf("####################################\n\n\n");
-
-  /* del_request(connect); */
-  printf("strcmp : %d\n", strcmp(add1, connect->first->next->next->hash));
-  printf("%d %s\n",check_already_present(connect,"yfuvgyi"),"yfuvgyi");
-
-  print_requests(connect);
-  printf("####################################\n\n\n");
-
-  printf("delete\n");
-  del_request(connect);
-
-  
-  print_requests(connect);
-  printf("####################################\n\n\n");
-  del_request(connect);
-  del_request(connect);
-  free(connect);
-  return 0;
 }
