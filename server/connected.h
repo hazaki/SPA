@@ -13,8 +13,8 @@ typedef struct connected connected;
 
 struct request{
   struct request *next;
-  unsigned char * hash;
-  char * ip;
+  unsigned char hash[32];
+  char ip[15];
   int port;
   time_t end_time;
 };

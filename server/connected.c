@@ -11,10 +11,11 @@ struct connected * init_connected(int max_connections){
 void close_connections(connected * connect){
   while(connect->first !=NULL)
     del_request(connect);
+  free(connect);
 }
 /*value returned:   meaning:
   1                 valid connection added in the structure
-  0                 entry already present in the structure 
+  0                 entry already present in the structure
   -1                invalid time
   -2                full
 */
@@ -32,8 +33,8 @@ int add_request(struct connected *connect, unsigned char * hash,char * ip,
     return -1;
 
   struct request * new_request = malloc(sizeof(struct request));
-  new_request->hash = hash;
-  new_request->ip = ip;
+  memcpy(new_request->hash,hash,32);
+  memcpy(new_request->ip,ip,15);
   new_request->port = port;
 
   new_request->end_time = time_req;
@@ -44,7 +45,7 @@ int add_request(struct connected *connect, unsigned char * hash,char * ip,
   }
   else{
     struct request *current_req = connect->first;
-    
+
     if(difftime(new_request->end_time, current_req->end_time) <=0)
       {
 	connect->first= new_request;
@@ -61,7 +62,7 @@ int add_request(struct connected *connect, unsigned char * hash,char * ip,
 	    }
 	  else
 	    insert = true;
-	  
+
 	}
       new_request->next = next_req;
       current_req->next = new_request;
@@ -85,8 +86,8 @@ bool check_already_present(struct connected * connect, unsigned char *hash){
   struct request * current = connect->first;
   while(current !=NULL){
 
-    if ( strcmp(hash, current->hash) ==0){
-      	//print_hash(hash);
+    if ( strncmp(hash, current->hash,32) ==0){
+	//print_hash(hash);
 	//print_hash(current->hash);
 	//printf("end time : %s\n", asctime(localtime(&current->end_time)));
 	return true;

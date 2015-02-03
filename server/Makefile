@@ -4,16 +4,16 @@ server: main.o receive.o encrypt_decrypt.o connected.o
 	gcc main.o receive.o -lpcap encrypt_decrypt.o -lssl -lcrypto connected.o -o server
 
 main.o: main.c receive.h
-	gcc -c main.c
+	gcc -c main.c -o main.o
 
 encrypt_decrypt.o: encrypt_decrypt.c encrypt_decrypt.h
-	gcc -c encrypt_decrypt.c -std=c99
+	gcc -c encrypt_decrypt.c -o encrypt_decrypt.o -std=c99
 
 receive.o: receive.c receive.h encrypt_decrypt.h connected.h
-	gcc -c receive.c
+	gcc -c receive.c -o receive.o
 
 connected.o: connected.c connected.h 
-	gcc -c connected.c
+	gcc -c connected.c -o connected.o
 
 clean:
 	@rm -f *.o

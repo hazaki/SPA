@@ -1,6 +1,5 @@
 #include "receive.h"
 
-
 #define SIZE_ETHERNET 14
 
 /* Ethernet addresses are 6 bytes */
@@ -49,8 +48,6 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	//Packet Parsing
 
 	struct connected * connection = (connected *)user;
-	print_requests(connection);
-	printf("longueur du paquet : %d\n", h->len);
 
 	const struct sniff_ethernet *ethernet; /* The ethernet header */
 	const struct sniff_ip *ip; /* The IP header */
@@ -77,11 +74,10 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	// Payload decryption
 
 	unsigned char hash[32];
-	//printf("longueur payload : %d\n", h->len - (SIZE_ETHERNET + size_ip + size_udp));
 	unsigned char plaintext[128];
 	int plaintext_len = get_unciphered_payload(payload,key,iv, plaintext, h->len - (SIZE_ETHERNET + size_ip + size_udp), hash);
 	plaintext[plaintext_len]='\0';
-	print_hash(hash);
+
 	//Argument Parsing and TimeStamp Recovering
 
 	int len_port = plaintext_len - 14 -2;
@@ -117,7 +113,7 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 
 	int res = add_request(connection, hash, (char *)inet_ntoa(ip->ip_src), atoi(num_port), after_tm + atoi(sec));
 
-	printf("\n Premier Packet\nhash: ");
+	printf("\n Packet \nhash: ");
 	print_hash(hash);
 	printf("ip : %s\n, port : %s\n, temps:%s\n\n",(char *)inet_ntoa(ip->ip_src),num_port,asctime(&after_send));
 	if(res == 0)
@@ -127,7 +123,7 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	if(res == -2)
 		printf("Structure Handling Request is Full\n");
 
-
+	//print_requests(connection);
 	//char command[128];
 	//sprintf(command, "iptables -A FORWARD -s %s -p %d", inet_ntoa(ip->ip_src), atoi(plaintext));
 	//system(command);
@@ -178,7 +174,7 @@ void receive(struct connected * connection)
 		exit(-1);
 	}
 
-	if (pcap_loop(handle,-1,callback,(char *)connection) < 0)
+	if (pcap_loop(handle,-1,callback,(char *)connection)< 0)
 	{
 		fprintf(stderr,"pcap_loop : %s\n",pcap_geterr(handle));
 		exit(-1);
