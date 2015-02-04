@@ -46,6 +46,7 @@ unsigned char *iv = "01234567890123456";
 void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 {
 	//Packet Parsing
+	//raise(SIGALRM);
 
 	struct connected * connection = (connected *)user;
 
@@ -123,12 +124,18 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	if(res == -2)
 		printf("Structure Handling Request is Full\n");
 
+	//Firewall Rule
+
 	//print_requests(connection);
-	//char command[128];
-	//sprintf(command, "iptables -A FORWARD -s %s -p %d", inet_ntoa(ip->ip_src), atoi(plaintext));
-	//system(command);
-	//system("iptables -L");
-	//system("iptables -F");
+	char command[128];
+	sprintf(command, "iptables -A FORWARD -s %s -p %d", inet_ntoa(ip->ip_src), atoi(plaintext));
+	system(command);
+	alarm(atoi(sec));
+}
+
+void sighandler(int signum)
+{
+   printf("Caught signal\n");
 }
 
 void receive(struct connected * connection)
@@ -174,10 +181,12 @@ void receive(struct connected * connection)
 		exit(-1);
 	}
 
+	signal(SIGALRM, sighandler);
+
 	if (pcap_loop(handle,-1,callback,(char *)connection)< 0)
 	{
 		fprintf(stderr,"pcap_loop : %s\n",pcap_geterr(handle));
 		exit(-1);
 	}
-	//close_connections(connection);
+	close_connections(connection);
 }

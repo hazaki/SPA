@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <netinet/in.h>
+#include <signal.h>
 
 #include "encrypt_decrypt.h"
 #include "connected.h"
