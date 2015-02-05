@@ -75,7 +75,6 @@ int add_request(struct connected *connect, unsigned char * hash,char * ip,
 
 void del_request(struct connected * connect){
   struct request * req = connect->first;
-  printf("first %s\n", req->hash);
   connect->first = connect->first->next;
   req->next = NULL;
   free(req);
@@ -87,9 +86,6 @@ bool check_already_present(struct connected * connect, unsigned char *hash){
   while(current !=NULL){
 
     if ( strncmp(hash, current->hash,32) ==0){
-	//print_hash(hash);
-	//print_hash(current->hash);
-	//printf("end time : %s\n", asctime(localtime(&current->end_time)));
 	return true;
     }
     current = current->next;

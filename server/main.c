@@ -1,14 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "connected.h"
 #include "receive.h"
-
-int MAX_REQUEST = 1024;
 
 int main(int argc, char ** argv)
 {
-	struct connected * connection = init_connected(MAX_REQUEST);
-	receive(connection);
+        if(argc < 2)
+        {
+                printf("Usage : ./server ip_applicative_server\n");
+                return;
+        }
+	char * ip_server = argv[1];
+	receive(ip_server);
 	return 0;
 }

@@ -43,12 +43,15 @@ struct sniff_udp {
 unsigned char *key = "01234567890123456789012345678901";
 unsigned char *iv = "01234567890123456";
 
+int MAX_REQUEST = 1024;
+
+struct connected * connection;
+
+char * ip_server;
+
 void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 {
 	//Packet Parsing
-	//raise(SIGALRM);
-
-	struct connected * connection = (connected *)user;
 
 	const struct sniff_ethernet *ethernet; /* The ethernet header */
 	const struct sniff_ip *ip; /* The IP header */
@@ -96,6 +99,8 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	//printf("num port :%s",num_port);
 	//printf("sec :%s\n",sec);
 
+	time_t now = time(NULL);
+
 	int hh, mm, ss, dd, mth, yy;
 	sscanf(ctime, "%04d%02d%02d%02d%02d%02d", &yy, &mth, &dd, &hh, &mm, &ss);
 	struct tm after_send = {0};
@@ -110,35 +115,71 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 
 	//printf("%s", asctime(&after_send));
 
-	//Replay detection and Request list update
+	//Replay detection
 
 	int res = add_request(connection, hash, (char *)inet_ntoa(ip->ip_src), atoi(num_port), after_tm + atoi(sec));
 
-	printf("\n Packet \nhash: ");
-	print_hash(hash);
-	printf("ip : %s\n, port : %s\n, temps:%s\n\n",(char *)inet_ntoa(ip->ip_src),num_port,asctime(&after_send));
+	//printf("\n Packet \nhash: ");
+	//print_hash(hash);
+	//printf("ip : %s\n, port : %s\n, temps:%s\n\n",(char *)inet_ntoa(ip->ip_src),num_port,asctime(&after_send));
 	if(res == 0)
+	{
 		printf("Packet Already received (Replay)\n");
+		return;
+	}
 	if(res == -1)
+	{
 		printf("Invalid Time\n");
+		return;
+	}
 	if(res == -2)
+	{
 		printf("Structure Handling Request is Full\n");
+		return;
+	}
 
 	//Firewall Rule
 
-	//print_requests(connection);
+	print_requests(connection);
 	char command[128];
-	sprintf(command, "iptables -A FORWARD -s %s -p %d", inet_ntoa(ip->ip_src), atoi(plaintext));
+	sprintf(command, "iptables -A FORWARD -s %s -d %s -p tcp --dport %d -j ACCEPT", inet_ntoa(ip->ip_src), ip_server, atoi(num_port));
 	system(command);
-	alarm(atoi(sec));
+
+        sprintf(command, "iptables -A FORWARD -d %s -s %s -p tcp --dport %d -j ACCEPT", inet_ntoa(ip->ip_src), ip_server, atoi(num_port));
+        system(command);
+
+	//system("iptables -L");
+
+	//ALARM LAUNCHING
+	alarm(connection->first->end_time - now);
 }
 
 void sighandler(int signum)
 {
-   printf("Caught signal\n");
+	printf("Caught signal for end_time :");
+	printf("%s", asctime((localtime(&connection->first->end_time))));
+
+	char command[128];
+	sprintf(command, "iptables -D FORWARD -s %s -d %s -p tcp --dport %d -j ACCEPT", connection->first->ip, ip_server, connection->first->port);
+        system(command);
+
+        sprintf(command, "iptables -D FORWARD -d %s -s %s -p tcp --dport %d -j ACCEPT", connection->first->ip, ip_server, connection->first->port);
+        system(command);
+
+	//system("iptables -L");
+
+	del_request(connection);
+
+	if(connection->first != NULL)
+	{
+   		time_t now = time(NULL);
+		alarm(connection->first->end_time - now);
+	}
 }
 
-void receive(struct connected * connection)
+
+
+void receive(char * ip)
 {
 	pcap_t *handle;			  /* Session handle */
 	char *dev;			  /* The device to sniff on */
@@ -149,6 +190,10 @@ void receive(struct connected * connection)
 	bpf_u_int32 net;		  /* Our IP */
 	struct pcap_pkthdr header;	  /* The header that pcap gives us */
 	u_char *packet;	      		/* The actual packet */
+
+	connection = init_connected(MAX_REQUEST);
+
+	ip_server = ip;
 
 	/* Define the device, eth0 will be taken by default */
 	dev = pcap_lookupdev(errbuf);
@@ -183,7 +228,7 @@ void receive(struct connected * connection)
 
 	signal(SIGALRM, sighandler);
 
-	if (pcap_loop(handle,-1,callback,(char *)connection)< 0)
+	if (pcap_loop(handle,-1,callback,packet)< 0)
 	{
 		fprintf(stderr,"pcap_loop : %s\n",pcap_geterr(handle));
 		exit(-1);

@@ -10,6 +10,6 @@
 #include "encrypt_decrypt.h"
 #include "connected.h"
 
-void receive(struct connected * connection);
+void receive(char * ip);
 
 #endif
