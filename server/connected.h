@@ -16,6 +16,7 @@ struct request{
   unsigned char hash[32];
   char ip[15];
   int port;
+  char protocol[3];
   time_t end_time;
 };
 
@@ -26,7 +27,7 @@ struct connected{
 };
 
 int add_request(struct connected *connect, unsigned char * hash,char * ip,
-		 int port, time_t time);
+		 int port, char * protocol, time_t time);
 
 struct connected * init_connected(int max_request);
 

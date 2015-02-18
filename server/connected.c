@@ -20,7 +20,7 @@ void close_connections(connected * connect){
   -2                full
 */
 int add_request(struct connected *connect, unsigned char * hash,char * ip,
-		 int port, time_t time_req)
+		 int port, char * protocol, time_t time_req)
 {
   if(connect->nb_request >= connect->max_request)
     return -2;
@@ -35,9 +35,10 @@ int add_request(struct connected *connect, unsigned char * hash,char * ip,
   struct request * new_request = malloc(sizeof(struct request));
   memcpy(new_request->hash,hash,32);
   memcpy(new_request->ip,ip,15);
+  memcpy(new_request->protocol, protocol,3);
   new_request->port = port;
-
   new_request->end_time = time_req;
+  new_request->protocol[3]='\0';
 
   if(connect->first ==NULL){
     connect->first = new_request;
@@ -98,7 +99,7 @@ void print_requests(struct connected * connect){
   while(current !=NULL){
     printf("###################################\n");
     print_hash(current->hash);
-    printf("ip : %s\nport : %d\n",current->ip,current->port);
+    printf("ip : %s\nport : %d\nprotocol : %s\n",current->ip,current->port,current->protocol);
     printf("end time : %s\n", asctime(localtime(&current->end_time)));
     current = current->next;
   }

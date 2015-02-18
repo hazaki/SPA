@@ -44,6 +44,9 @@ unsigned char *key = "01234567890123456789012345678901";
 unsigned char *iv = "01234567890123456";
 
 int MAX_REQUEST = 1024;
+int LEN_SEC = 2;
+int LEN_PROTO = 3;
+int LEN_TIME = 14;
 
 struct connected * connection;
 
@@ -84,20 +87,34 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 
 	//Argument Parsing and TimeStamp Recovering
 
-	int len_port = plaintext_len - 14 -2;
+	char header_ip_src[15];
+	sprintf(header_ip_src,"%s",(char *)inet_ntoa(ip->ip_src));
+	int len_ip = strlen(header_ip_src);
+	printf("%d\n",len_ip);
 
+	char payload_ip_src[15];
+
+	memcpy(payload_ip_src, plaintext, len_ip);
+
+	if(strncmp(header_ip_src,payload_ip_src,len_ip)!=0)
+		return ;
+
+	int len_port = plaintext_len - len_ip - LEN_PROTO - LEN_SEC - LEN_TIME;
 	char num_port[len_port];
-	char sec[2];
-	char ctime[14];
+	char sec[LEN_SEC];
+	char ctime[LEN_TIME];
+	char protocol[LEN_PROTO];
 
-	memcpy(num_port, plaintext, len_port);
-	memcpy(sec, plaintext + len_port, 2);
-	memcpy(ctime, plaintext + len_port + 2, 14);
+
+	memcpy(num_port, plaintext + len_ip, len_port);
+	memcpy(protocol, plaintext + len_ip + len_port, LEN_PROTO);
+	memcpy(sec, plaintext + len_ip + len_port + LEN_PROTO, LEN_SEC);
+	memcpy(ctime, plaintext +len_ip + len_port + LEN_PROTO + LEN_SEC, LEN_TIME);
 	num_port[len_port]='\0';
-	sec[2]='\0';
+	sec[LEN_SEC]='\0';
+	protocol[3]='\0';
 
-	//printf("num port :%s",num_port);
-	//printf("sec :%s\n",sec);
+	//printf("port : %s\nprotocole : %s\nsec :%s\ntime : %s\n",num_port,protocol,sec,ctime);
 
 	time_t now = time(NULL);
 
@@ -113,15 +130,10 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 
 	time_t after_tm = mktime(&after_send);
 
-	//printf("%s", asctime(&after_send));
-
 	//Replay detection
 
-	int res = add_request(connection, hash, (char *)inet_ntoa(ip->ip_src), atoi(num_port), after_tm + atoi(sec));
+	int res = add_request(connection, hash, (char *)inet_ntoa(ip->ip_src), atoi(num_port), protocol, after_tm + atoi(sec));
 
-	//printf("\n Packet \nhash: ");
-	//print_hash(hash);
-	//printf("ip : %s\n, port : %s\n, temps:%s\n\n",(char *)inet_ntoa(ip->ip_src),num_port,asctime(&after_send));
 	if(res == 0)
 	{
 		printf("Packet Already received (Replay)\n");
@@ -139,16 +151,15 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	}
 
 	//Firewall Rule
-
 	print_requests(connection);
 	char command[128];
-	sprintf(command, "iptables -A FORWARD -s %s -d %s -p tcp --dport %d -j ACCEPT", inet_ntoa(ip->ip_src), ip_server, atoi(num_port));
+	sprintf(command, "iptables -A FORWARD -s %s -d %s -p %s --dport %d -j ACCEPT", inet_ntoa(ip->ip_src), ip_server, protocol, atoi(num_port));
 	system(command);
 
-        sprintf(command, "iptables -A FORWARD -d %s -s %s -p tcp --dport %d -j ACCEPT", inet_ntoa(ip->ip_src), ip_server, atoi(num_port));
+        sprintf(command, "iptables -A FORWARD -d %s -s %s -p %s --dport %d -j ACCEPT", inet_ntoa(ip->ip_src), ip_server, protocol, atoi(num_port));
         system(command);
 
-	//system("iptables -L");
+	system("iptables -L");
 
 	//ALARM LAUNCHING
 	alarm(connection->first->end_time - now);
@@ -160,15 +171,15 @@ void sighandler(int signum)
 	printf("%s", asctime((localtime(&connection->first->end_time))));
 
 	char command[128];
-	sprintf(command, "iptables -D FORWARD -s %s -d %s -p tcp --dport %d -j ACCEPT", connection->first->ip, ip_server, connection->first->port);
+	sprintf(command, "iptables -D FORWARD -s %s -d %s -p %s --dport %d -j ACCEPT", connection->first->ip, ip_server, connection->first->protocol, connection->first->port);
         system(command);
 
-        sprintf(command, "iptables -D FORWARD -d %s -s %s -p tcp --dport %d -j ACCEPT", connection->first->ip, ip_server, connection->first->port);
+        sprintf(command, "iptables -D FORWARD -d %s -s %s -p %s --dport %d -j ACCEPT", connection->first->ip, ip_server, connection->first->protocol, connection->first->port);
         system(command);
-
-	//system("iptables -L");
 
 	del_request(connection);
+
+	system("iptables -L");
 
 	if(connection->first != NULL)
 	{

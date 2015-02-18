@@ -17,7 +17,7 @@ connected.o: connected.c connected.h
 
 clean:
 	@rm -f *.o
-	@rm -f serveur
+	@rm -f server
 
 help :
 	@echo -e "Usage :"

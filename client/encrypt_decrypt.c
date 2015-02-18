@@ -119,6 +119,24 @@ unsigned char* sha256(unsigned char text[])
 /*   free(hash); */
 /* } */
 
+/********************************/
+/**************HMAC**************/
+/********************************/
+
+void hmac(char * seed, int cmpt)
+{
+    unsigned char* digest;
+    unsigned char counter[20];
+    sprintf(counter, "%d", cmpt);
+    digest = HMAC(EVP_sha1(), seed, strlen(seed), counter, strlen(counter), NULL, NULL);
+
+    // Be careful of the length of string with the choosen hash engine. SHA1 produces a 20-byte hash value which rendered as 40 characters.
+    // Change the length accordingly with your choosen hash engine
+    for(int i = 0; i < 20; i++)
+         sprintf(&seed[i*2], "%02x", (unsigned int)digest[i]);
+
+    printf("HMAC digest: %s\n", seed);
+}
 
 /********************************/
 /******Create correct payload****/

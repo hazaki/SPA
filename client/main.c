@@ -45,6 +45,13 @@ int main(int argc, char ** argv)
 
 	char * protocol = argv[2];
 
+	int i =0;
+	char * seed;
+	seed = malloc(40*sizeof(char));
+	while(i >= 0)
+	{
+		hmac(seed,i);
+	}
 //	if(!check_protocol(protocol))
 //		return -1;
 
@@ -84,6 +91,7 @@ int main(int argc, char ** argv)
     	freeifaddrs(ifaddr);
 
 	//Payload Creation
+
 	char data[LEN_TIME + strlen(num_port) + 2 + strlen(host) + strlen(protocol)];
 	memcpy(data, host, strlen(host));
 	memcpy(data + strlen(host), num_port, strlen(num_port));
