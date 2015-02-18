@@ -48,6 +48,8 @@ int LEN_SEC = 2;
 int LEN_PROTO = 3;
 int LEN_TIME = 14;
 
+#define HMAC_LEN 40
+
 struct connected * connection;
 
 char * ip_server;
@@ -80,17 +82,26 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 
 	// Payload decryption
 
+	//OTP Recovering
+
+	//seed and counter recovering
+
+	int i = 1;
+	char seed[HMAC_LEN]="0123456789012345678901234567890123456789";
+
+	//recover seed - save no information as long as you're not sur about the client's identity
+	hmac(seed, i, HMAC_LEN);
+
 	unsigned char hash[32];
 	unsigned char plaintext[128];
-	int plaintext_len = get_unciphered_payload(payload,key,iv, plaintext, h->len - (SIZE_ETHERNET + size_ip + size_udp), hash);
+	int plaintext_len = get_unciphered_payload(payload, seed, iv, plaintext, h->len - (SIZE_ETHERNET + size_ip + size_udp), hash);
 	plaintext[plaintext_len]='\0';
-
-	//Argument Parsing and TimeStamp Recovering
+	printf("plaintext : %s\n", plaintext);
+	//Payload Parsing and TimeStamp Recovering
 
 	char header_ip_src[15];
 	sprintf(header_ip_src,"%s",(char *)inet_ntoa(ip->ip_src));
 	int len_ip = strlen(header_ip_src);
-	printf("%d\n",len_ip);
 
 	char payload_ip_src[15];
 
@@ -149,6 +160,11 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 		printf("Structure Handling Request is Full\n");
 		return;
 	}
+
+	//OTP
+
+	//increment counter and save information
+	i++;
 
 	//Firewall Rule
 	print_requests(connection);

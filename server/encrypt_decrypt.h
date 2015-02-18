@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-void hmac(char * seed, int cmpt);
+void hmac(char * seed, int cmpt, int len);
 
 int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
 			   unsigned char *iv, unsigned char * plaintext, int cipherpayload_len, unsigned char * hash);

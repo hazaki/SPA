@@ -1,19 +1,15 @@
-#include <sys/unistd.h>
-#include <sys/socket.h>
-#include <netdb.h>
 #include <stdio.h>
 #include <arpa/inet.h>
-#include <sys/socket.h>
-#include <netdb.h>
 #include <ifaddrs.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 
 #include "encrypt_decrypt.h"
 #include "forgery.h"
 
 int LEN_TIME=14;
+
+#define HMAC_LEN 40
 
 unsigned char *key = "01234567890123456789012345678901";
 unsigned char *iv = "01234567890123456";
@@ -26,6 +22,7 @@ int main(int argc, char ** argv)
 		return -1;
 	}
 
+	//Argument Recovering
 	char ctime[14];
 	time_t now = time( NULL);
 	struct tm now_tm = *localtime(&now);
@@ -45,19 +42,12 @@ int main(int argc, char ** argv)
 
 	char * protocol = argv[2];
 
-	int i =0;
-	char * seed;
-	seed = malloc(40*sizeof(char));
-	while(i >= 0)
-	{
-		hmac(seed,i);
-	}
 //	if(!check_protocol(protocol))
 //		return -1;
 
 	char * interface = argv[4];
 	char * dest_ip = argv[5];
-
+	printf("interface : %s\n",interface);
 	//Recovering SRC IP address
 
 	struct ifaddrs *ifaddr, *ifa;
@@ -90,7 +80,7 @@ int main(int argc, char ** argv)
     	}
     	freeifaddrs(ifaddr);
 
-	//Payload Creation
+	//Payload Parsing
 
 	char data[LEN_TIME + strlen(num_port) + 2 + strlen(host) + strlen(protocol)];
 	memcpy(data, host, strlen(host));
@@ -104,7 +94,18 @@ int main(int argc, char ** argv)
 
 	unsigned char cipherpayload[128 + 32];
 
-	int payload_len = get_ciphered_payload(data,key,iv, cipherpayload);
+	//OTP
+
+	//recover counter
+	int i = 1;
+       	char seed[HMAC_LEN]="0123456789012345678901234567890123456789";
+       	seed[HMAC_LEN]='\0';
+       	//recover seed
+       	hmac(seed,i,HMAC_LEN);
+       	i++;
+	//save seed and counter
+
+	int payload_len = get_ciphered_payload(data, seed, iv, cipherpayload);
 
 	forge(interface, dest_ip, cipherpayload, payload_len);
 

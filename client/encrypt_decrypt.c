@@ -109,7 +109,7 @@ unsigned char* sha256(unsigned char text[])
    SHA256_Init(&ctx);
    SHA256_Update(&ctx,text,strlen(text));
    SHA256_Final(hash,&ctx);
-   
+
    return hash;
 }
 /* int main(){ */
@@ -123,7 +123,7 @@ unsigned char* sha256(unsigned char text[])
 /**************HMAC**************/
 /********************************/
 
-void hmac(char * seed, int cmpt)
+void hmac(char * seed, int cmpt, int len)
 {
     unsigned char* digest;
     unsigned char counter[20];
@@ -146,13 +146,13 @@ int get_ciphered_payload(unsigned char *plaintext,  unsigned char *key,
 				    unsigned char *iv, unsigned char * cipherpayload)
 {
   unsigned char ciphertext[128];
-  
+
   int plaintext_len = strlen(plaintext );
   int cipher_len = encrypt(plaintext,plaintext_len, key,iv,ciphertext);
   ciphertext[cipher_len]='\0';
 
   unsigned char * cipherhash = sha256(ciphertext);
-  
+
   memcpy(cipherpayload, ciphertext, cipher_len);
   memcpy(cipherpayload + cipher_len, cipherhash, 32);
 
@@ -166,7 +166,7 @@ int check_hash(unsigned char *ciphertext, unsigned char *hash){
       return 0;
   }
   return 1;
-      
+
 }
 int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
 			   unsigned char *iv, unsigned char * plaintext, int cipherpayload_len, unsigned char * hash)
@@ -181,8 +181,8 @@ int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
     fprintf(stderr, "Invalid authentication");
     exit(-1);
   }
-  
+
   int plaintext_len = decrypt(ciphertext,ciphertext_len, key,iv,plaintext);
-  
+
   return plaintext_len;
 }
