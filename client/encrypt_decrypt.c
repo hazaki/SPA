@@ -128,7 +128,7 @@ void hmac(char * seed, int cmpt, int len, char * password)
     unsigned char* digest;
     unsigned char counter[20];
     sprintf(counter, "%d", cmpt);
-    digest = HMAC(EVP_sha1(), seed, strlen(seed), counter, strlen(counter), NULL, NULL);
+    digest = HMAC(EVP_sha1(), seed, len, counter, strlen(counter), NULL, NULL);
 
     // Be careful of the length of string with the choosen hash engine. SHA1 produces a 20-byte hash value which rendered as 40 characters.
     // Change the length accordingly with your choosen hash engine
@@ -162,23 +162,21 @@ int get_ciphered_payload(unsigned char *plaintext,  unsigned char *key,
 }
 int check_hash(unsigned char *ciphertext, unsigned char *hash){
   unsigned char * ciphertext_hash = sha256(ciphertext);
-  for(int i = 0; i< 32; i++){
-    if(ciphertext_hash[i] != hash[i])
-      return 0;
-  }
-  return 1;
+  if(strncmp(hash,ciphertext_hash,32)==0)
+    return 1;
+  return 0;
 
 }
 int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
 			    unsigned char * plaintext, int cipherpayload_len, unsigned char * hash)
 {
-  unsigned char * iv;
+  unsigned char iv[16];
   int ciphertext_len = cipherpayload_len - 32 - 16;
   unsigned char ciphertext[ciphertext_len];
   memcpy(ciphertext, cipherpayload, ciphertext_len);
-  memcpy(iv, cipherpayload + cipherpayload_len + 32, 16);
-
   memcpy(hash, cipherpayload + ciphertext_len, 32);
+  memcpy(iv, cipherpayload + ciphertext_len + 32, 16);
+
   ciphertext[ciphertext_len]='\0';
   if (!check_hash(ciphertext, hash)){
     fprintf(stderr, "Invalid authentication");
