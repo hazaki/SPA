@@ -109,7 +109,7 @@ unsigned char* sha256(unsigned char text[])
    SHA256_Init(&ctx);
    SHA256_Update(&ctx,text,strlen(text));
    SHA256_Final(hash,&ctx);
-   
+
    return hash;
 }
 /* int main(){ */
@@ -123,7 +123,7 @@ unsigned char* sha256(unsigned char text[])
 /**************HMAC**************/
 /********************************/
 
-void hmac(char * seed, int cmpt, int len)
+void hmac(char * seed, int cmpt, int len, char * password)
 {
     unsigned char* digest;
     unsigned char counter[20];
@@ -133,9 +133,9 @@ void hmac(char * seed, int cmpt, int len)
     // Be careful of the length of string with the choosen hash engine. SHA1 produces a 20-byte hash value which rendered as 40 characters.
     // Change the length accordingly with your choosen hash engine
     for(int i = 0; i < 20; i++)
-         sprintf(&seed[i*2], "%02x", (unsigned int)digest[i]);
+         sprintf(&password[i*2], "%02x", (unsigned int)digest[i]);
 
-    printf("HMAC digest: %s\n", seed);
+    printf("HMAC digest: %s\n", password);
 }
 
 /********************************/
@@ -146,17 +146,18 @@ int get_ciphered_payload(unsigned char *plaintext,  unsigned char *key,
 				    unsigned char *iv, unsigned char * cipherpayload)
 {
   unsigned char ciphertext[128];
-  
-  int plaintext_len = strlen(plaintext );
+
+  int plaintext_len = strlen(plaintext);
   int cipher_len = encrypt(plaintext,plaintext_len, key,iv,ciphertext);
   ciphertext[cipher_len]='\0';
 
   unsigned char * cipherhash = sha256(ciphertext);
-  
+
   memcpy(cipherpayload, ciphertext, cipher_len);
   memcpy(cipherpayload + cipher_len, cipherhash, 32);
+  memcpy(cipherpayload + cipher_len + 32, iv, 16);
 
-  return cipher_len +32;
+  return cipher_len + 32 + 16;
 
 }
 int check_hash(unsigned char *ciphertext, unsigned char *hash){
@@ -164,23 +165,26 @@ int check_hash(unsigned char *ciphertext, unsigned char *hash){
   if(strncmp(hash,ciphertext_hash,32)==0)
     return 1;
   return 0;
-      
+
 }
 int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
-			   unsigned char *iv, unsigned char * plaintext, int cipherpayload_len, unsigned char * hash)
+			    unsigned char * plaintext, int cipherpayload_len, unsigned char * hash)
 {
-  int ciphertext_len = cipherpayload_len -32;
+  unsigned char iv[16];
+  int ciphertext_len = cipherpayload_len - 32 - 16;
   unsigned char ciphertext[ciphertext_len];
   memcpy(ciphertext, cipherpayload, ciphertext_len);
-
   memcpy(hash, cipherpayload + ciphertext_len, 32);
+  memcpy(iv, cipherpayload + ciphertext_len + 32, 16);
+
   ciphertext[ciphertext_len]='\0';
+
   if (!check_hash(ciphertext, hash)){
     fprintf(stderr, "Invalid authentication");
     exit(-1);
   }
-  
+
   int plaintext_len = decrypt(ciphertext,ciphertext_len, key,iv,plaintext);
-  
+
   return plaintext_len;
 }

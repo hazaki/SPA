@@ -41,7 +41,6 @@ struct sniff_udp {
 };
 
 unsigned char *key = "01234567890123456789012345678901";
-unsigned char *iv = "01234567890123456";
 
 int MAX_REQUEST = 1024;
 int LEN_SEC = 2;
@@ -49,6 +48,8 @@ int LEN_PROTO = 3;
 int LEN_TIME = 14;
 
 #define HMAC_LEN 40
+
+char seed[HMAC_LEN]="0123456789012345678901234567890123456789";
 
 struct connected * connection;
 
@@ -87,14 +88,13 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	//seed and counter recovering
 
 	int i = 1;
-	char seed[HMAC_LEN]="0123456789012345678901234567890123456789";
-
+	char password[HMAC_LEN];
 	//recover seed - save no information as long as you're not sur about the client's identity
-	hmac(seed, i, HMAC_LEN);
+	hmac(seed, i, HMAC_LEN, password);
 
 	unsigned char hash[32];
 	unsigned char plaintext[128];
-	int plaintext_len = get_unciphered_payload(payload, seed, iv, plaintext, h->len - (SIZE_ETHERNET + size_ip + size_udp), hash);
+	int plaintext_len = get_unciphered_payload(payload, password, plaintext, h->len - (SIZE_ETHERNET + size_ip + size_udp), hash);
 	plaintext[plaintext_len]='\0';
 	printf("plaintext : %s\n", plaintext);
 	//Payload Parsing and TimeStamp Recovering
@@ -175,7 +175,7 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
         sprintf(command, "iptables -A FORWARD -d %s -s %s -p %s --dport %d -j ACCEPT", inet_ntoa(ip->ip_src), ip_server, protocol, atoi(num_port));
         system(command);
 
-	system("iptables -L");
+	system("iptables -L -n");
 
 	//ALARM LAUNCHING
 	alarm(connection->first->end_time - now);
@@ -195,7 +195,7 @@ void sighandler(int signum)
 
 	del_request(connection);
 
-	system("iptables -L");
+	system("iptables -L -n");
 
 	if(connection->first != NULL)
 	{

@@ -123,7 +123,7 @@ unsigned char* sha256(unsigned char text[])
 /**************HMAC**************/
 /********************************/
 
-void hmac(char * seed, int cmpt, int len)
+void hmac(char * seed, int cmpt, int len, char * password)
 {
     unsigned char* digest;
     unsigned char counter[20];
@@ -133,9 +133,9 @@ void hmac(char * seed, int cmpt, int len)
     // Be careful of the length of string with the choosen hash engine. SHA1 produces a 20-byte hash value which rendered as 40 characters.
     // Change the length accordingly with your choosen hash engine
     for(int i = 0; i < 20; i++)
-         sprintf(&seed[i*2], "%02x", (unsigned int)digest[i]);
+         sprintf(&password[i*2], "%02x", (unsigned int)digest[i]);
 
-    printf("HMAC digest: %s\n", seed);
+    printf("HMAC digest: %s\n", password);
 }
 
 /********************************/
@@ -147,7 +147,7 @@ int get_ciphered_payload(unsigned char *plaintext,  unsigned char *key,
 {
   unsigned char ciphertext[128];
 
-  int plaintext_len = strlen(plaintext );
+  int plaintext_len = strlen(plaintext);
   int cipher_len = encrypt(plaintext,plaintext_len, key,iv,ciphertext);
   ciphertext[cipher_len]='\0';
 
@@ -155,8 +155,9 @@ int get_ciphered_payload(unsigned char *plaintext,  unsigned char *key,
 
   memcpy(cipherpayload, ciphertext, cipher_len);
   memcpy(cipherpayload + cipher_len, cipherhash, 32);
+  memcpy(cipherpayload + cipher_len + 32, iv, 16);
 
-  return cipher_len +32;
+  return cipher_len + 32 + 16;
 
 }
 int check_hash(unsigned char *ciphertext, unsigned char *hash){
@@ -169,11 +170,13 @@ int check_hash(unsigned char *ciphertext, unsigned char *hash){
 
 }
 int get_unciphered_payload(unsigned char *cipherpayload,  unsigned char *key,
-			   unsigned char *iv, unsigned char * plaintext, int cipherpayload_len, unsigned char * hash)
+			    unsigned char * plaintext, int cipherpayload_len, unsigned char * hash)
 {
-  int ciphertext_len = cipherpayload_len -32;
+  unsigned char * iv;
+  int ciphertext_len = cipherpayload_len - 32 - 16;
   unsigned char ciphertext[ciphertext_len];
   memcpy(ciphertext, cipherpayload, ciphertext_len);
+  memcpy(iv, cipherpayload + cipherpayload_len + 32, 16);
 
   memcpy(hash, cipherpayload + ciphertext_len, 32);
   ciphertext[ciphertext_len]='\0';

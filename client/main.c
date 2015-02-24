@@ -11,8 +11,10 @@ int LEN_TIME=14;
 
 #define HMAC_LEN 40
 
+char seed[HMAC_LEN]="0123456789012345678901234567890123456789";
+
 unsigned char *key = "01234567890123456789012345678901";
-unsigned char *iv = "01234567890123456";
+unsigned char *iv = "0123456789012345";
 
 int main(int argc, char ** argv)
 {
@@ -95,17 +97,17 @@ int main(int argc, char ** argv)
 	unsigned char cipherpayload[128 + 32];
 
 	//OTP
-
+	seed[HMAC_LEN]='\0';
 	//recover counter
 	int i = 1;
-       	char seed[HMAC_LEN]="0123456789012345678901234567890123456789";
-       	seed[HMAC_LEN]='\0';
+       	char password[HMAC_LEN];
        	//recover seed
-       	hmac(seed,i,HMAC_LEN);
+       	hmac(seed,i,HMAC_LEN,password);
        	i++;
+
 	//save seed and counter
 
-	int payload_len = get_ciphered_payload(data, seed, iv, cipherpayload);
+	int payload_len = get_ciphered_payload(data, password, iv, cipherpayload);
 
 	forge(interface, dest_ip, cipherpayload, payload_len);
 
