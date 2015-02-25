@@ -14,7 +14,7 @@
 \usepackage{listings}
 \title{Rapport de projet:\\
 Mécanismes de Single Packet Authorization}
-\author{CEOLA Cédric MONIN JAcques\\
+\author{CEOLA Cédric MONIN Jacques\\
 Encadré par M. GUERMOUCHE Abdou}
 
 \begin{document}
@@ -26,33 +26,34 @@ Encadré par M. GUERMOUCHE Abdou}
 \clearpage
 
 \section{Introduction}
-<<<<<<< HEAD
 
-Dans le cadre de l'UE de projet, nous allons implémenter un système de \emph{Single Packet AUtorization}.\\
-m\\
-m\\
-m\\
-m\\
-=======
-Dans le cadre de l'UE de projet, nous allons implémenter un système de \emph{Single Packet AUtorization}.
+Afin d'empêcher le scan de port d'un pare-feu protégeant un serveur applicatif, de nombreuses techniques ont vu le jour. En effet, posséder un pare-feu dont tous les ports sont fermés et ne s'ouvrent que lors d'échanges avec des clients approuvés permettrait d'amoindrir les attaques sur ce serveur.
 
->>>>>>> c1fd67caef5c788782a9c18ec8869aa840607133
+Le but est donc de fermer par défaut les ports logiciels du pare-feu et mettre en place un mécanisme de reconnaissance des clients autorisés à interagir avec le serveur.
+
+Plusieurs modèles ont tentés de répondre à cette question, nous allons étudier les plus connus.
+
+\subsection{Port Knocking}
+
+\subsection{Single Packet Authorization}
+
+ 
 \section{Choix de Librairie}
 
 http://packetlife.net/armory/category/encryption/
 
 \subsection{chiffrer}
-http://en.wikipedia.org/wiki/AES_implementations
+$http://en.wikipedia.org/wiki/AES_implementations
 http://en.wikipedia.org/wiki/CyaSSL
 http://en.wikipedia.org/wiki/GnuTLS
 http://en.wikipedia.org/wiki/PolarSSL
-http://en.wikipedia.org/wiki/OpenSSL
+http://en.wikipedia.org/wiki/OpenSSL$
 
 \subsection{forger des paquets}
-libdnet ?
-libnet
+$libdnet ?
+libnet$
 
 \subsection{capturer des paquets}
-libpcap
+$libpcap$
 
 \end{document}
