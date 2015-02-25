@@ -1,6 +1,5 @@
 #include "handle_XML_connection_file.h"
 
-typedef void (*fct_parcours_t)(xmlNodePtr);
 
 int asprintf(char **path, const char *format, ...) {
     int n, size = 128;
@@ -79,7 +78,9 @@ void afficher_noeud(xmlNodePtr noeud) {
     }
 }
 
-xmlNodePtr getNodeByIp(xmlDocPtr doc ,const char * ip){
+
+
+xmlNodePtr getNodeByIp(xmlDocPtr doc ,char * ip){
   char *path;
   xmlNodePtr n = NULL;
   xmlXPathContextPtr ctxt;
@@ -87,24 +88,19 @@ xmlNodePtr getNodeByIp(xmlDocPtr doc ,const char * ip){
 
   xmlXPathInit();
   ctxt = xmlXPathNewContext(doc);
-  if (-1 == asprintf(&path, "/connections/client[@ip=\"%s\"]", ip)) {
+  if (-1 == asprintf(&path, "/connections/client[@IP=\"%s\"]", ip)) {
     fprintf(stderr, "asprintf failed\n");
     return NULL;
   }
-  printf("path %s\n", path);
   if (NULL != ctxt && NULL != path) {
-    printf("ok\n");
-    if (NULL != (xpathRes = xmlXPathEvalExpression(BAD_CAST path, ctxt)) &&
-	XPATH_NODESET == xpathRes->type &&
-	1 == xpathRes->nodesetval->nodeNr) {
-      if(NULL == xmlXPathEvalExpression(BAD_CAST path, ctxt))
-	printf("xmlxpatcheval error\n");
-      if(XPATH_NODESET != xpathRes->type)
-	printf("error type\n");
-      if(1 != xpathRes->nodesetval->nodeNr)
-	printf("error\n");
-      n = xpathRes->nodesetval->nodeTab[0];
-    }
+    xpathRes = xmlXPathEvalExpression(BAD_CAST path, ctxt);
+    
+    if ((NULL != xpathRes)
+	&& XPATH_NODESET == xpathRes->type
+	&& 1 == xpathRes->nodesetval->nodeNr)
+      {
+	n = xpathRes->nodesetval->nodeTab[0];
+      }
     free(path);
     xmlXPathFreeObject(xpathRes);
     xmlXPathFreeContext(ctxt);
@@ -113,6 +109,29 @@ xmlNodePtr getNodeByIp(xmlDocPtr doc ,const char * ip){
   return n;
 }
 
+void delete_node(xmlDocPtr doc, char * ip){
+  xmlNodePtr node = getNodeByIp(doc,ip);
+  xmlUnlinkNode(node);
+  xmlFreeNode(node);
+}
+
+char * getSeed(xmlDocPtr doc, char * ip){
+  xmlNodePtr target = getNodeByIp(doc,ip);
+  xmlNodePtr res= target->children;
+  return(char *) xmlNodeGetContent(res);
+}
+
+char * getCount(xmlDocPtr doc, char * ip){
+  xmlNodePtr target = getNodeByIp(doc,ip);
+  xmlNodePtr res= target->children->next;
+  return (char *) xmlNodeGetContent(res);
+}
+
+void setCountValue(xmlDocPtr doc, char * ip, char * newValue){
+  xmlNodePtr target = getNodeByIp(doc,ip);
+  target = target->children->next;
+  xmlNodeSetContent(target, (const xmlChar *)newValue);
+}
 
 int main(){
   xmlDocPtr doc;
@@ -132,8 +151,15 @@ int main(){
     xmlFreeDoc(doc);
     return EXIT_FAILURE;
   }
-  xmlNodePtr res = getNodeByIp(doc,"IP2");
-  afficher_noeud(res);
+  char * ip2 = "IP2";
+  printf("seed :%s\n", getSeed(doc,ip2));
+  printf("avant setValue\n");
+  printf("count :%s\n", getCount(doc,ip2));
+  setCountValue(doc, ip2, "478");
+  printf("apres setValue\n");
+  printf("count :%s\n", getCount(doc,ip2));
+
+  delete_node(doc,ip2);
   
   //writting in XML file
   FILE* file = NULL;
