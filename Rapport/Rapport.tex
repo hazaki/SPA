@@ -35,25 +35,37 @@ Plusieurs modèles ont tentés de répondre à cette question, nous allons étud
 
 \subsection{Port Knocking}
 
+Le Port Knocking est un des modèles qui a été inventé pour répondre au besoin d'ouverture et de fermeture automatique de ports.
+
+Dans ce modèle, la client s'authentifie auprès du serveur en lançant des tentatives de connexions sur certains ports spécifiques constituant un code. Le serveur ouvre un port seulement si le même émetteur réalise la bonne séquence de tentative de connexion.
+Cette solution nécessite peu de ressource et est aisée à mettre en place, cependant une simple écoute du réseau permet de repérer le code permettant l'ouverture d'un port ce qui rend cette solution facilement attaquable.
+
 \subsection{Single Packet Authorization}
 
+\clearpage
+
+\section{Principes fondamentaux du SPA}
  
-\section{Choix de Librairie}
+\clearpage 
+ 
+\section{Notre Implémentation} 
+ 
+\subsection{Choix de Librairie}
 
 http://packetlife.net/armory/category/encryption/
 
-\subsection{chiffrer}
+\subsubsection{chiffrer}
 $http://en.wikipedia.org/wiki/AES_implementations
 http://en.wikipedia.org/wiki/CyaSSL
 http://en.wikipedia.org/wiki/GnuTLS
 http://en.wikipedia.org/wiki/PolarSSL
 http://en.wikipedia.org/wiki/OpenSSL$
 
-\subsection{forger des paquets}
+\subsubsection{forger des paquets}
 $libdnet ?
 libnet$
 
-\subsection{capturer des paquets}
+\subsubsection{capturer des paquets}
 $libpcap$
 
 \end{document}
