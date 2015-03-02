@@ -31,6 +31,8 @@ Afin d'empêcher le scan de port d'un pare-feu protégeant un serveur applicatif
 
 Le but est donc de fermer par défaut les ports logiciels du pare-feu et mettre en place un mécanisme de reconnaissance des clients autorisés à interagir avec le serveur.
 
+De plus, il existe une restriction supplémentaire qui est que le client doit pouvoir faire ouvrir un port au serveur via un unique paquet envoyé.
+
 Plusieurs modèles ont tentés de répondre à cette question, nous allons étudier les plus connus.
 
 \subsection{Port Knocking}
@@ -38,18 +40,38 @@ Plusieurs modèles ont tentés de répondre à cette question, nous allons étud
 Le Port Knocking est un des modèles qui a été inventé pour répondre au besoin d'ouverture et de fermeture automatique de ports.
 
 Dans ce modèle, la client s'authentifie auprès du serveur en lançant des tentatives de connexions sur certains ports spécifiques constituant un code. Le serveur ouvre un port seulement si le même émetteur réalise la bonne séquence de tentative de connexion.
+
 Cette solution nécessite peu de ressource et est aisée à mettre en place, cependant une simple écoute du réseau permet de repérer le code permettant l'ouverture d'un port ce qui rend cette solution facilement attaquable.
 
 \subsection{Single Packet Authorization}
 
+Le Single Packet Authorization est le second modèle qui répond à cette problématique.
+
+Ce Protocole fonctionne grâce à l'utilisation d'un chiffrement symétrique. En effet, pour demander une ouverture de port, le client va envoyer le numéro de port chiffré avec un clé partagée avec le serveur. Le serveur aura une clé différente par client ainsi, aucune identité ne pourra être usurpée.
+
+Grâce à des principes supplémentaires expliqués ultérieurement, il sera possible d'empêcher des attaques de type rejeu.
+
+Nous nous proposons d'étudier plus en profondeur cette méthode.
 \clearpage
 
-\section{Principes fondamentaux du SPA}
- 
-\clearpage 
- 
-\section{Notre Implémentation} 
- 
+\section{Principes fondamentaux et implémentation du Single Packet Authorization}
+
+Nous allons nous intéresser au Single Packet Authorization, nous présenterons les principes fondamentaux et expliqueront leurs intérêt et l'utilisation que nous en faisons.
+
+\subsection{Chiffrement}
+
+Pour palier à la faille du Port Knocking, et afin qu'une simple écoute du réseau ne suffise pas à mettre en péril ce schéma, le serveur va partager une clé avec chacun des ses clients.
+
+Nous utiliserons le standard du chiffrement symétrique, AES.
+
+Cette méthode permet donc qu'une personne ne partageant pas de clé avec le serveur ne puisse créer de paquet ouvrant un port.
+
+\subsection{Détection du Rejeu}
+
+\subsection{One-Time Password}
+  
+\clearpage  
+  
 \subsection{Choix de Librairie}
 
 http://packetlife.net/armory/category/encryption/
@@ -67,5 +89,9 @@ libnet$
 
 \subsubsection{capturer des paquets}
 $libpcap$
+
+\clearpage 
+
+\section{Conclusion}
 
 \end{document}
