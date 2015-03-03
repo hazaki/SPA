@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<connections>
+  <client IP="192.168.0.1"><seedPass>abcdefghijklmnopqrstuvwxyz01234567890123</seedPass><count>5</count></client>
+</connections>

@@ -6,12 +6,11 @@
 
 #include "encrypt_decrypt.h"
 #include "forgery.h"
+#include "handle_XML_connection_file.h"
 
 int LEN_TIME=14;
 
 #define HMAC_LEN 40
-
-char seed[HMAC_LEN]="0123456789012345678901234567890123456789";
 
 unsigned char *key = "01234567890123456789012345678901";
 unsigned char *iv = "0123456789012345";
@@ -97,19 +96,49 @@ int main(int argc, char ** argv)
 	unsigned char cipherpayload[128 + 32];
 
 	//OTP
-	seed[HMAC_LEN]='\0';
-	//recover counter
-	int i = 1;
-       	char password[HMAC_LEN];
-       	//recover seed
-       	hmac(seed,i,HMAC_LEN,password);
-       	i++;
 
-	//save seed and counter
+	xmlDocPtr doc;
+	doc = xmlParseFile("connections.xml");
+	if (doc == NULL) {
+    		fprintf(stderr, "Invalid XML file\n");
+    		return EXIT_FAILURE;
+  	}
+
+	//recover counter
+	int counter;
+       	counter = atoi(getCount(doc,host));
+
+       	//recover seed
+	char * seed;
+	char password[HMAC_LEN];
+	seed = getSeed(doc,host);
+
+       	hmac(seed,counter,HMAC_LEN,password);
 
 	int payload_len = get_ciphered_payload(data, password, iv, cipherpayload);
 
 	forge(interface, dest_ip, cipherpayload, payload_len);
+
+	counter++;
+
+	char ccounter[20];
+	sprintf(ccounter, "%d", counter);
+	printf("counter %s\n",ccounter);
+
+	setCountValue(doc, host, ccounter);
+
+	//writting in XML file
+  	FILE* file = NULL;
+  	file = fopen("connections.xml", "w");
+  	if(file== NULL){
+     		fprintf(stderr, "Error while opening file\n");
+  	}
+  	xmlDocDump(file, doc);
+
+  	fclose(file);
+
+  	// free memory
+  	xmlFreeDoc(doc);
 
 	return 0;
 }

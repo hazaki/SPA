@@ -133,7 +133,7 @@ void setCountValue(xmlDocPtr doc, char * ip, char * newValue){
   xmlNodeSetContent(target, (const xmlChar *)newValue);
 }
 
-int main(){
+/*int main(){
   xmlDocPtr doc;
   xmlNodePtr racine;
   xmlKeepBlanksDefault(0); // Ignore les noeuds texte composant la mise en forme
@@ -175,7 +175,7 @@ int main(){
   xmlFreeDoc(doc);
 
   return EXIT_SUCCESS;
-}
+}*/
 
 /*
 gcc -o handle_XML `xml2-config --cflags` handle_XML_connection_file.c `xml2-config --libs`

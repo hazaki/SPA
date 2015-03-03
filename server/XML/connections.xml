@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<connections>
-  <client IP="IP1"><seedPass>seedP1</seedPass><count>0</count></client>
-  <client IP="IP3"><seedPass>seedP3</seedPass><count>0</count></client>
-</connections>

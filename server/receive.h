@@ -9,6 +9,7 @@
 
 #include "encrypt_decrypt.h"
 #include "connected.h"
+#include "handle_XML_connection_file.h"
 
 void receive(char * ip);
 

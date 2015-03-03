@@ -1,19 +1,22 @@
 all: server
 
-server: main.o receive.o encrypt_decrypt.o connected.o
-	gcc main.o receive.o -lpcap encrypt_decrypt.o -lssl -lcrypto connected.o -o server
+server: main.o receive.o encrypt_decrypt.o connected.o handle_XML_connection_file.o
+	gcc main.o receive.o -lpcap encrypt_decrypt.o -lssl -lcrypto connected.o handle_XML_connection_file.o `xml2-config --cflags` `xml2-config --libs` -o server
 
 main.o: main.c receive.h
-	gcc -c main.c -o main.o
+	gcc -c main.c -o main.o `xml2-config --cflags` `xml2-config --libs`
 
 encrypt_decrypt.o: encrypt_decrypt.c encrypt_decrypt.h
 	gcc -c encrypt_decrypt.c -o encrypt_decrypt.o -std=c99
 
-receive.o: receive.c receive.h encrypt_decrypt.h connected.h
-	gcc -c receive.c -o receive.o
+receive.o: receive.c receive.h encrypt_decrypt.h connected.h handle_XML_connection_file.h
+	gcc -c receive.c -o receive.o `xml2-config --cflags` `xml2-config --libs`
 
 connected.o: connected.c connected.h 
 	gcc -c connected.c -o connected.o
+
+handle_XML_connection_file.o: handle_XML_connection_file.c handle_XML_connection_file.h
+	gcc -c handle_XML_connection_file.c -o handle_XML_connection_file.o `xml2-config --cflags` `xml2-config --libs`
 
 clean:
 	@rm -f *.o

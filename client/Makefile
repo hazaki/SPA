@@ -1,16 +1,19 @@
 all: client
 
-client: main.o forgery.o encrypt_decrypt.o
-	gcc main.o forgery.o -lnet encrypt_decrypt.o -lssl -lcrypto -o client
+client: main.o forgery.o encrypt_decrypt.o handle_XML_connection_file.o
+	gcc main.o forgery.o -lnet encrypt_decrypt.o -lssl -lcrypto handle_XML_connection_file.o `xml2-config --cflags` `xml2-config --libs` -o client
 
-main.o: main.c encrypt_decrypt.h forgery.h
-	gcc -c main.c
+main.o: main.c encrypt_decrypt.h forgery.h handle_XML_connection_file.h
+	gcc -c main.c `xml2-config --cflags` `xml2-config --libs`
 
 encrypt_decrypt.o: encrypt_decrypt.c encrypt_decrypt.h
 	gcc -c encrypt_decrypt.c -std=c99
 
 forgery.o: forgery.c forgery.h
 	gcc -c forgery.c
+
+handle_XML_connection_file.o: handle_XML_connection_file.c handle_XML_connection_file.h
+	gcc -c handle_XML_connection_file.c -o handle_XML_connection_file.o `xml2-config --cflags` `xml2-config --libs`
 
 clean:
 	@rm -f *.o

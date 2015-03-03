@@ -81,16 +81,31 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	}
 	payload = (u_char *)(packet + SIZE_ETHERNET + size_ip + size_udp);
 
+	char * cip_src = (char *)inet_ntoa(ip->ip_src);
+
 	// Payload decryption
 
 	//OTP Recovering
 
 	//seed and counter recovering
+	xmlDocPtr doc;
+        doc = xmlParseFile("connections.xml");
+        if (doc == NULL) {
+                fprintf(stderr, "Invalid XML file\n");
+                return ;
+        }
 
-	int i = 1;
-	char password[HMAC_LEN];
+        //recover counter
+        int counter;
+        counter = atoi(getCount(doc,cip_src));
+
+        //recover seed
+        char * seed;
+        char password[HMAC_LEN];
+        seed = getSeed(doc,cip_src);
+
 	//recover seed - save no information as long as you're not sur about the client's identity
-	hmac(seed, i, HMAC_LEN, password);
+	hmac(seed, counter, HMAC_LEN, password);
 
 	unsigned char hash[32];
 	unsigned char plaintext[128];
@@ -164,7 +179,26 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	//OTP
 
 	//increment counter and save information
-	i++;
+	counter++;
+
+	char ccounter[20];
+        sprintf(ccounter, "%d", counter);
+        printf("counter %s\n",ccounter);
+
+        setCountValue(doc, cip_src, ccounter);
+
+        //writting in XML file
+        FILE* file = NULL;
+        file = fopen("connections.xml", "w");
+        if(file== NULL){
+                fprintf(stderr, "Error while opening file\n");
+        }
+        xmlDocDump(file, doc);
+
+        fclose(file);
+
+        // free memory
+        xmlFreeDoc(doc);
 
 	//Firewall Rule
 	print_requests(connection);
