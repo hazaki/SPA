@@ -51,7 +51,7 @@
 \newcommand{\tutor}[1]{\def\thetutor{#1}}
 
 % translation for custom words
-\newcommand{\authorname}{Author}
+\newcommand{\authorname}{Authors}
 \newcommand{\authorsname}{Authors}
 \newcommand{\supervisorname}{Supervisor}
 \newcommand{\tutorname}{Tutor}
@@ -182,19 +182,19 @@
 
 
 %%%%% Report Title %%%%%
-\title{Le titre du rapport}
-\subtitle{Le sous-titre du rapport (optionnel)}
+\title{Single Packet Authorization}
+%\subtitle{Le sous-titre du rapport (optionnel)}
 
 % If only one author use \author
 \author{Jean Dupont \texttt{<jean.dupont@etu.u-bordeaux.fr>}}
 
 % If several authors use \authors{}
-%\authors{Jean Dupont \texttt{<jean.dupont@etu.u-bordeaux.fr>}\\
-%Stéphanie Martin \texttt{<stephanie.martin@etu.u-bordeaux.fr>}}
+\authors{Cédric Ceola \texttt{<cedric.ceola@etu.u-bordeaux.fr>}\\
+Jacques Monin \texttt{<jacques.monin@etu.u-bordeaux.fr>}\\}
 
-\supervisor{Jane Doe \texttt{<jane.doe@mycompany.com>}}
+%\supervisor{Jane Doe \texttt{<jane.doe@mycompany.com>}}
 
-\tutor{John Smith \texttt{<john.smith@u-bordeaux.fr>}}
+\tutor{Abdou Guermouche \texttt{<abdou.guermouche@u-bordeaux.fr>}}
 
 %\version{0.1}
 
@@ -204,28 +204,29 @@
 
 \frontmatter%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \maketitle
+\clearpage
 \thispagestyle{empty}
 
-\input{declaration}
-
-\input{abstract}
-
-\cleardoublepage
 \tableofcontents*
 
 \input{introduction}
 
 \mainmatter%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\part{Lorem ipsum dolor sit}
+\part{Deux modèles d'ouverture de port dynamique}
 
-\input{lorem}
-\input{ipsum}
+\input{portknocking}
+\input{spa}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\part{Consectetur adipiscing elit}
+\part{Réalisation de SPA}
 
-\input{consectetur}
-\input{adipiscing}
+\input{chiffrement}
+\input{rejeu}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\part{Tests}
+
+\input{tests}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -233,12 +234,12 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\part*{Annexes}
-\addcontentsline{toc}{part}{Annexes}
-\appendix
+%\part*{Annexes}
+%\addcontentsline{toc}{part}{Annexes}
+%\appendix
 
-\input{dolor}
-\input{sit}
+%\input{dolor}
+%\input{sit}
 
 
 \backmatter%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
