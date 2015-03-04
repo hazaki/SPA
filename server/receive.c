@@ -206,7 +206,7 @@ void callback(u_char *user, const struct pcap_pkthdr *h, const u_char * packet)
 	sprintf(command, "iptables -A FORWARD -s %s -d %s -p %s --dport %d -j ACCEPT", inet_ntoa(ip->ip_src), ip_server, protocol, atoi(num_port));
 	system(command);
 
-        sprintf(command, "iptables -A FORWARD -d %s -s %s -p %s --dport %d -j ACCEPT", inet_ntoa(ip->ip_src), ip_server, protocol, atoi(num_port));
+        sprintf(command, "iptables -A FORWARD -d %s -s %s -p %s -m state --state ESTABLISHED -j ACCEPT", inet_ntoa(ip->ip_src), ip_server, protocol);
         system(command);
 
 	system("iptables -L -n");
@@ -224,7 +224,7 @@ void sighandler(int signum)
 	sprintf(command, "iptables -D FORWARD -s %s -d %s -p %s --dport %d -j ACCEPT", connection->first->ip, ip_server, connection->first->protocol, connection->first->port);
         system(command);
 
-        sprintf(command, "iptables -D FORWARD -d %s -s %s -p %s --dport %d -j ACCEPT", connection->first->ip, ip_server, connection->first->protocol, connection->first->port);
+        sprintf(command, "iptables -D FORWARD -d %s -s %s -p %s -m state --state ESTABLISHED -j ACCEPT", connection->first->ip, ip_server, connection->first->protocol);
         system(command);
 
 	del_request(connection);
