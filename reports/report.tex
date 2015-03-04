@@ -18,7 +18,8 @@
 % to use it properly.
 %
 
-\documentclass[a4paper]{memoir}
+\documentclass[oneside]{memoir}
+%\documentclass[a4paper]{memoir}
 
 %%%%% Packages %%%%%
 \usepackage{lmodern}
@@ -66,6 +67,7 @@
 \addto{\captionsfrench}{\renewcommand{\thepartname}{Partie}}
 \else{}
 \fi
+
 
 %%%%% Setting Titlepage %%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -136,14 +138,14 @@
 %% chapters style %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% You may try several styles (see more in the memoir manual).
 
-\chapterstyle{veelo}
+%\chapterstyle{veelo}
 %\chapterstyle{chappell}
 %\chapterstyle{ell}
 %\chapterstyle{ger}
 %\chapterstyle{pedersen}
 %\chapterstyle{verville}
 %\chapterstyle{madsen}
-%\chapterstyle{thatcher}
+\chapterstyle{thatcher}
 
 %% parts style %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -205,7 +207,6 @@ Jacques Monin \texttt{<jacques.monin@etu.u-bordeaux.fr>}\\}
 \frontmatter%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \maketitle
 \clearpage
-\thispagestyle{empty}
 
 \tableofcontents*
 

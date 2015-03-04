@@ -1,1 +1,12 @@
 \chapter{Chiffrement}
+
+Pour palier à la faille du Port Knocking, et afin qu'une simple écoute du réseau ne suffise pas à mettre en péril ce schéma, le serveur va partager une clé avec chacun des ses clients. Ce faisant, seul le chiffré des données vont transiter sur le réseau.
+
+Pour le chiffrement, nous utiliserons le standard du chiffrement symétrique, AES.
+/!\ Expliquer pourquoi le cbc
+
+Cette méthode permet donc qu'une personne ne partageant pas de clé avec le serveur ne puisse créer de paquet ouvrant un port.
+
+Nous désirons que le client puisse choisir le port qui sera ouvert, le protocole de transport utilisé (tcp ou udp) ainsi que le temps d'ouverture du port (en maintenant un temps maximal d'ouverture de port).
+
+De plus, afin de s'assurer de l'authenticité de l'émeteur du paquet, celui-ci doit introduire son adresse IP dans le payload qui sera envoyé. Ainsi, en comparant cette donnée et le header du paquet ip, il sera possible de voir si l'expéditeur est le bon.
