@@ -1,0 +1,252 @@
+% This LaTeX template is intended for the students of CSI Master from
+% University of Bordeaux to make their reports.
+%
+% This template can be used and modified with no restriction.
+%
+% %%% History %%%
+%
+% * April 22, 2014: First version (Emmanuel Fleury <fleury@labri.fr>)
+%
+% %%% Tips and Tricks %%%
+%
+% --- The memoir LaTeX class ---
+% This template use the 'memoir' class, for more information about
+% customization of this class see: http://www.ctan.org/pkg/memoir
+%
+% --- Rubber ---
+% The Makefile are using the Rubber tool, install the 'rubber' package
+% to use it properly.
+%
+
+\documentclass[a4paper]{memoir}
+
+%%%%% Packages %%%%%
+\usepackage{lmodern}
+\usepackage{palatino}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% To be removed if you want it in english
+\usepackage[french]{babel}
+
+\usepackage{amstext,amsmath,amssymb,amsfonts}
+\usepackage{multirow,colortbl}
+\usepackage{xspace,varioref}
+\usepackage{hyperref}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+
+\usepackage{appendix}
+\usepackage{makeidx}
+
+%% custom style %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% custom commands
+\newcommand{\version}[1]{\def\theversion{#1}}
+\newcommand{\subtitle}[1]{\def\thesubtitle{#1}}
+
+\newcommand{\authors}[1]{\def\theauthors{#1}\author{#1}}
+\newcommand{\supervisor}[1]{\def\thesupervisor{#1}}
+\newcommand{\tutor}[1]{\def\thetutor{#1}}
+
+% translation for custom words
+\newcommand{\authorname}{Author}
+\newcommand{\authorsname}{Authors}
+\newcommand{\supervisorname}{Supervisor}
+\newcommand{\tutorname}{Tutor}
+
+\newcommand{\thepartname}{Part}
+
+\ifdefined\addto{%
+\addto{\captionsfrench}{\renewcommand{\authorname}{Auteur}}%
+\addto{\captionsfrench}{\renewcommand{\authorsname}{Auteurs}}%
+\addto{\captionsfrench}{\renewcommand{\supervisorname}{Superviseur}}%
+\addto{\captionsfrench}{\renewcommand{\tutorname}{Tuteur}}}
+\addto{\captionsfrench}{\renewcommand{\thepartname}{Partie}}
+\else{}
+\fi
+
+%%%%% Setting Titlepage %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pretitle{\flushleft\Huge\textsf}
+\posttitle{\\[-.65em]\rule{\linewidth}{1.5mm}\\[-.65em]
+\ifx\thesubtitle\undefined%
+\else%
+  \hfill{\small\itshape \thesubtitle}%
+\fi
+\centering
+\vfill
+\includegraphics{Universite_de_Bordeaux.pdf}
+\vfill
+\iflanguage{french}{%
+  {\Huge\bfseries Mémoire de fin d'étude}
+% {\Huge Projet de deuxième année}
+% {\Huge Projet de première année}
+}{%
+  {\Huge Master Thesis}
+% {\Huge Master2 Project}
+% {\Huge Master1 Project}
+}\\
+\vspace{1.25em}
+\iflanguage{french}{%
+  \LARGE
+  Master \emph{Sciences et Technologies},\\
+  Mention \emph{Informatique},\\
+% Mention \emph{Mathématiques},\\
+  Parcours \emph{Cryptologie et Sécurité Informatique}.\\
+  \par\hfill%
+}{%
+  \LARGE
+  Master in \emph{Sciences and Technologies},\\
+  Specialty in \emph{Computer Science},\\
+% Specialty in \emph{Mathematics},\\
+  Track \emph{Cryptology and Computer Security}.\\
+  \par\hfill
+}}
+
+%% author
+\preauthor{\vspace{\fill}\\
+\ifx\theauthors\undefined%
+  \flushleft\textbf{\large\authorname}\\
+\else%
+  \flushleft\textbf{\large\authorsname}\\
+\fi
+\small}
+\postauthor{\vspace{1em}
+\ifx\thesupervisor\undefined%
+\else%
+  \newline\textbf{\large\supervisorname}\\\thesupervisor\\[1em]%
+\fi
+\ifx\thetutor\undefined%
+\else%
+  \textbf{\large\tutorname}\\\thetutor%
+\fi
+\\[-.25em]
+\rule{\linewidth}{1mm}\\[-.25em]}
+
+%% version and date
+\predate{\hspace{\fill}
+\ifx\theversion\undefined%
+\else%
+  version~\theversion~--~%
+\fi}
+\postdate{}
+
+%% chapters style %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% You may try several styles (see more in the memoir manual).
+
+\chapterstyle{veelo}
+%\chapterstyle{chappell}
+%\chapterstyle{ell}
+%\chapterstyle{ger}
+%\chapterstyle{pedersen}
+%\chapterstyle{verville}
+%\chapterstyle{madsen}
+%\chapterstyle{thatcher}
+
+%% parts style %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand*{\thepart}{\arabic{part}}
+
+\renewcommand*{\parttitlefont}{\chaptitlefont\Huge}
+\renewcommand*{\partnamefont}{\chapnamefont\HUGE}
+\renewcommand*{\partnumfont}{\chapnumfont\HUGE}
+
+\renewcommand{\beforepartskip}{\vspace*{\fill}}
+\renewcommand{\midpartskip}{\vspace{.5em}\hrule height 1.5mm \vspace{.5em}}
+\renewcommand{\afterpartskip}{\vspace*{\fill}}
+
+% table of contents
+\renewcommand*{\cftpartname}{\thepartname}
+\renewcommand*{\cftpartpresnum}{\space}
+\renewcommand*{\cftpartaftersnum}{.}
+\renewcommand*{\cftpartaftersnumb}{\space}
+
+\cftpagenumbersoff{part}
+\renewcommand{\cftpartafterpnum}{\protect\\[-.75em]%
+  \protect\mbox{}\protect\hrule\par}
+
+\renewcommand{\cftchapterdotsep}{4}
+
+
+%% index generation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeindex
+
+%%%%% Useful macros %%%%%
+\newcommand{\latinloc}[1]{\ifx\undefined\lncs\relax\emph{#1}\else\textrm{#1}\fi\xspace}
+\newcommand{\etc}{\latinloc{etc}}
+\newcommand{\eg}{\latinloc{e.g.}}
+\newcommand{\ie}{\latinloc{i.e.}}
+\newcommand{\st}{\ensuremath{\text{\xspace s.t.\xspace}}}
+
+
+%%%%% Report Title %%%%%
+\title{Le titre du rapport}
+\subtitle{Le sous-titre du rapport (optionnel)}
+
+% If only one author use \author
+\author{Jean Dupont \texttt{<jean.dupont@etu.u-bordeaux.fr>}}
+
+% If several authors use \authors{}
+%\authors{Jean Dupont \texttt{<jean.dupont@etu.u-bordeaux.fr>}\\
+%Stéphanie Martin \texttt{<stephanie.martin@etu.u-bordeaux.fr>}}
+
+\supervisor{Jane Doe \texttt{<jane.doe@mycompany.com>}}
+
+\tutor{John Smith \texttt{<john.smith@u-bordeaux.fr>}}
+
+%\version{0.1}
+
+%%%%% Document %%%%%
+%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\frontmatter%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\maketitle
+\thispagestyle{empty}
+
+\input{declaration}
+
+\input{abstract}
+
+\cleardoublepage
+\tableofcontents*
+
+\input{introduction}
+
+\mainmatter%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\part{Lorem ipsum dolor sit}
+
+\input{lorem}
+\input{ipsum}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\part{Consectetur adipiscing elit}
+
+\input{consectetur}
+\input{adipiscing}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{conclusion}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\part*{Annexes}
+\addcontentsline{toc}{part}{Annexes}
+\appendix
+
+\input{dolor}
+\input{sit}
+
+
+\backmatter%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{bibliography}
+
+\printindex
+
+\end{document}

@@ -1,0 +1,123 @@
+%
+% Permission is granted to copy, distribute and/or modify this
+% document under the terms of the Creative Common by-nc-sa License
+% version 3.0 (CC BY-NC-SA 3.0). A copy of the license can be found at
+% http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode.
+%
+
+\usepackage[french]{babel}
+
+% Highlight macros
+\newcommand{\highlight}[1]{\textcolor{structure.fg}{\bfseries #1}}
+
+%% Title, subtitle, authors, institute, date, ...
+\title{Mon titre de présentation}
+\subtitle{(mon sous-titre)}
+
+\author[John Smith]{John Smith\\[-.25em]
+\texttt{\scriptsize <john.smith@etu.u-bordeaux.fr>}}
+
+\institute[Master CSI, France]{Master CSI, Université de Bordeaux, France}
+
+\date{\today}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%[ Document ]%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\begin{frame}
+  \vspace{3.5em}
+  \titlepage
+
+  \begin{center}
+    \includegraphics[scale=.2]{cc-by-nc-sa.pdf}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Plan}
+  \tableofcontents[subsectionstyle=hide]
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Motivations}
+
+\begin{frame}<handout:0>
+  \frametitle{Plan}
+  \tableofcontents[currentsection,subsectionstyle=hide]
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Internet est attaqué !!!}
+\vspace{-.25em}
+{\footnotesize
+\begin{verbatim}
+Newsgroups: comp.risks
+Subject: Virus on the Arpanet - Milnet
+<Stoll@DOCKMASTER.ARPA> Thu, 3 Nov 88 06:46 EST
+
+Hi Gang!
+
+It's now 3:45 AM on Wednesday 3 November 1988. I'm tired, so don't
+believe everything that follows... Apparently, there is a massive
+attack on Unix systems going on right now.
+
+I have spoken to systems managers at several computers, on both the
+east & west coast, and I suspect this may be a system wide problem.
+Symptom: hundreds or thousands of jobs start running on a Unix system
+bringing response to zero.
+
+[...]
+
+This virus is spreading very quickly over the Milnet. Within the past
+4 hours, I have evidence that it has hit >10 sites across the country,
+both Arpanet and Milnet sites. I suspect that well over 50 sites have
+been hit. Most of these are "major" sites and gateways.
+
+[...]
+
+This is bad news.
+\end{verbatim}}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{La suite de ma présentation}
+
+\begin{frame}<handout:0>
+  \frametitle{Plan}
+  \tableofcontents[currentsection]
+\end{frame}
+
+\begin{frame}
+  \frametitle{On continue !!!}
+
+  \vfill
+  Ce slide est quasiment vide !
+  \vfill
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Références \& Lectures supplémentaires}
+
+\begin{frame}<handout:0>
+  \frametitle{Plan}
+  \tableofcontents[currentsection,subsectionstyle=hide]
+\end{frame}
+
+\nocite{*}
+\bibliographystyle{alpha}
+
+\begin{frame}[allowframebreaks]
+  \frametitle{Livres et références}
+  \bibliography{bibliography}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+  \vfill
+  \centering
+  \highlight{\Huge Questions~?}
+  \vfill
+\end{frame}
