@@ -1,0 +1,14 @@
+\chapter{Authenticité}
+
+Pour palier à la faille du Port Knocking, et afin qu'une simple écoute du réseau ne suffise pas à mettre en péril ce schéma, la pérénité de cette méthode va reposer sur l'authenticité des clients. En effet il est nécessaire de vérifier qu'une tentative d'ouverture de port est bien effectuée par un client légitime.
+
+A contrario du port knocking qui supposait que seul un client légitime pouvait connaître la séquence de coups, ici l'authenticité va se faire grâce à des clés prépartagées. En effet, le serveur va partager une clé avec chacun des ses clients. Ainsi, les données transitées seront chiffrées par un algorithme de chiffrement symétrique avec la clé du client, seul celui-ci pourra donc dialoguer avec le serveur. 
+
+Pour le chiffrement, nous utiliserons le standard du chiffrement symétrique, AES.
+/!\ Expliquer pourquoi le cbc
+
+Cette méthode permet donc qu'une personne ne partageant pas de clé avec le serveur ne puisse créer de paquet ouvrant un port.
+
+Nous désirons que le client puisse choisir le port qui sera ouvert, le protocole de transport utilisé (tcp ou udp) ainsi que le temps d'ouverture du port (en maintenant un temps maximal d'ouverture de port).
+
+De plus, afin de s'assurer de l'authenticité de l'émeteur du paquet, celui-ci doit introduire son adresse IP dans le payload qui sera envoyé. Ainsi, en comparant cette donnée et le header du paquet ip, il sera possible de voir si l'expéditeur est le bon.
