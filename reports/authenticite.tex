@@ -4,11 +4,24 @@ Pour palier à la faille du Port Knocking, et afin qu'une simple écoute du rés
 
 A contrario du port knocking qui supposait que seul un client légitime pouvait connaître la séquence de coups, ici l'authenticité va se faire grâce à des clés prépartagées. En effet, le serveur va partager une clé avec chacun des ses clients. Ainsi, les données transitées seront chiffrées par un algorithme de chiffrement symétrique avec la clé du client, seul celui-ci pourra donc dialoguer avec le serveur. 
 
-Pour le chiffrement, nous utiliserons le standard du chiffrement symétrique, AES.
-/!\ Expliquer pourquoi le cbc
+Pour le chiffrement, nous utiliserons le standard du chiffrement symétrique, AES. 
+Pour choisir le mode d'opération cryptographique, nous avons du choisir entre ECB, CBC, CFB, OFB et CTR. 
+A la vue du peu d'information à chiffrer (numéro de port, temps d'ouverture et protocole de transport) un chiffrement par flux ne se justifiait pas.
+De plus, sachant que ECB connait des vulnérabilités quant à l'intégrité et la protection des données puisqu'il est sensible aux attaques par répétition (deux blocs avec le même contenu seront chiffrés de la même manière).
+Par ailleurs, OFB est fragile vis-à-vis des attaques à clair connu et CTR est fragile si l'attaquant connait l'IV (ce qui sera le cas ici étant donné que celui-ci sera envoyé en clair).
+Nous choisirons donc CBC.
 
 Cette méthode permet donc qu'une personne ne partageant pas de clé avec le serveur ne puisse créer de paquet ouvrant un port.
 
 Nous désirons que le client puisse choisir le port qui sera ouvert, le protocole de transport utilisé (tcp ou udp) ainsi que le temps d'ouverture du port (en maintenant un temps maximal d'ouverture de port).
 
 De plus, afin de s'assurer de l'authenticité de l'émeteur du paquet, celui-ci doit introduire son adresse IP dans le payload qui sera envoyé. Ainsi, en comparant cette donnée et le header du paquet ip, il sera possible de voir si l'expéditeur est le bon.
+
+En sachant que la structure des messages est connue et que leur contenu l'est aussi (on peut trouver le port ouvert en scannant le pare-feu ainsi que les autres informations), il semble nécessaire de changer régulièrement de mot de passe pour que celui-ci ne soit pas affaibli.
+
+Nous utiliserons donc le mécanisme des OTP pour pallier à ce problème. En effet, le client aura une graine à partir de laquelle faire évoluer les différents mots de passes utilisés à chaque envoie de paquet. De son côté le serveur aura une graine par client qu'il fera évoluer à chaque réception de paquet de sa part et en s'assurant de l'authenticité de ces messages pour ne pas se désynchroniser avec le client.
+
+Plusieurs types d'OTP existent, ceux basés sur le temps. Il faut donc synchroniser les horloges et accepter seulement les messages chiffrer depuis la graine et une heure qui est dans un intervale de temps accepté.
+Ceux basés sur des algorithmes mathématiques qui créeront le nouveau mot de passe à partir du précédent ou d'un challenge.
+
+Dans le cadre du SPA, il fallait qu'il n'y ait pas d'autre dialogue entre le client et serveur que celui déjà connu, ainsi nous avons choisi d'utiliser les HOTP. Le client et le serveur partagent une graine et un compteur, le mot de passe courant sera le résultat du hmac entre ces deux valeurs. A chaque nouveau paquet, le compteur évoluera.

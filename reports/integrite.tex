@@ -1,1 +1,5 @@
 \chapter{Intégrité}
+
+Pour préserver l'intégrité des données, qui est nécessaire pour qu'un attaquant ne modifie pas les données envoyées par le client et ne puisse pas faire ouvrir le port qui lui convient, le haché du chiffré du payload sera ajouté à la fin du message.
+
+Quand le serveur recevra le paquet, il n'aura qu'à comparer le haché avec le payload (qu'il aura lui même haché) pour s'assurer de l'intégrité des données.
