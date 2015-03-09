@@ -1,1 +1,39 @@
 \chapter{Tests}
+
+\section{Utilisation du client-serveur}
+
+Nous nous proposons de tester notre implémentation. Nous allons essayer de nous connecter en ssh depuis le client sur le serveur applicatif ceci en utilisant la méthode SPA.
+
+Voici dans un premier temps la topologie de notre réseau :
+
+/!\\ Mettre image du réseau
+
+Nous allons depuis la machine client tenter une connexion ssh vers le serveur applicatif en 10.0.0.2
+
+\includegraphics[scale=1]{test_ssh.jpeg}
+
+Celle-ci ne fonctionne pas car les règles du pare-feu ne laissent pas passer la connexion.
+
+\includegraphics[scale=1]{regles_ip_avant.jpeg}
+
+Pour parrer à ces restrictions, nous allons envoyer un paquet SPA demandant de laisser passer les communications en tcp vers le port 22.
+
+\includegraphics[scale=1]{execution_client.jpeg}
+
+Voici ce que nous pouvons voir sur le serveur après réception du paquet.
+
+\includegraphics[scale=0.75]{regles_apres.jpeg}
+
+La connexion ssh fonctionne maintenant (mais seulement pour le temps spécifié).
+
+\includegraphics[scale=0.75]{test_ssh2.jpeg}
+\clearpage
+\section{Attaques}
+
+Mettons-nous à la place de l'attaquant. En écoutant sur le réseau, nous retrouvons le paquet SPA formé de cette manière. On se rend compte que toutes les données sont chiffrées et qu'il n'y a que l'IV à la fin du message en clair.
+
+\includegraphics[scale=0.75]{wireshark.jpeg}
+
+En essayant de rejouer un paquet sur le réseau, le serveur le détecte en n'en tient pas compte.
+
+\includegraphics[scale=1]{rejeu.jpeg}
