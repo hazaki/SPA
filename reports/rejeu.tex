@@ -1,3 +1,17 @@
 \chapter{Rejeu}
 
-Dans un contexte de Single Packet Autorization, il est indispensable de vérifier qu'un paquet n'est pas issu du rejeu. En effet, 
+Dans un contexte de Single Packet Autorization, il est indispensable de vérifier qu'un paquet n'est pas issu du rejeu.
+
+En effet, dans un contexte où les One-Time-Password ne sont pas utilisés, il est possible pour un attaquant qui écoute le réseau d'enregistrer un paquet envoyé par un client légitime et le renvoyer dès qu'il veut une ouverture de port.
+
+Dans le but de résoudre ce problème, il est possible d'utiliser un horodatage. Le client envoie les informations précédement présentées auquelles sont ajoutées l'année, le mois et l'heure de création du paquet. Le client a une structure gérant le rejeu où il enregistrera, entre autres, l'heure de fermeture du port et le hachage du chiffré reçu. Lorsque l'heure de fermeture du port est arrivée, le paquet sort de la structure.
+
+Deux cas d'attaques s'offrent à nous :
+\begin{itemize}
+\item L'attaquant rejoue un paquet alors que le port est toujours ouvert. Le serveur remarque que ce paquet a déjà été reçu puisque son haché est dans la structure.
+\item L'attaquant rejoue un paquet alors que le port est fermé. Le serveur remarque que l'heure de la création du paquet ajouté au temps d'ouverture du port (donnant l'heure de fermeture du port) étant déjà passé, ce paquet est donc ignoré.
+\end{itemize}
+\vspace{0.5cm}
+
+Une autre manière de faire est l'utilisation des One-Time-Password. Comme expliqué dans le chapitre 3, nous utilisons de HMAC Based OTP. Le mot de passe a utilisation unique dépend d'un compteur qui évolue de la même manière du côté du client et du serveur.
+Ainsi, si un attaquant rejoue un paquet, celui-ci sera déchiffré avec la clé courante du serveur qui n'est pas celle qui a servi à déchiffrer ce paquet. Celui-ci ne sera donc pas traité et le compteur du serveur n'évoluera pas pour rester synchronisé avec le client.
