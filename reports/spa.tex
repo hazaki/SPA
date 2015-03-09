@@ -1,11 +1,16 @@
 \chapter{Single Packet Authorization}
 
-Le Single Packet Authorization est le second modèle qui répond à cette problématique.
+Le Single Packet Authorization est le second modèle qui répond à cette problématique. Ce mécanisme repose sur l'envoi, par le client, d'une unique requête au pare-feu.
 
-Ce Protocole fonctionne grâce à l'utilisation d'un chiffrement symétrique. En effet, pour demander une ouverture de port, le client va envoyer le numéro de port chiffré avec un clé partagée avec le serveur. Le serveur aura une clé différente par client ainsi, aucune identité ne pourra être usurpée.
+En suivant ce système, le client va envoyé cette requête contenant un numéro de port. Le pare-feu laissera ensuite passé les paquets émis par le client, à destination du serveur applicatif en utilisant ce port et ce pour une période limitée.
+ 
+\includegraphics[scale=0.5]{spa_general_1}
+
+Afin que ce mécanisme soit sécurisé, le pare-feu possèdera une clé spécifique à chaque client garantissant ainsi qu'aucune identité ne pourra être usurpée.
+
+\includegraphics[scale=0.5]{spa_general_2}
 
 Grâce à des principes supplémentaires expliqués ultérieurement, il sera possible d'empêcher des attaques de type rejeu.
 
 Nous nous proposons d'étudier plus en profondeur cette méthode.
 
-\includegraphics[scale=0.5]{schema_general_spa}

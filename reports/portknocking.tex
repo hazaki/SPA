@@ -6,7 +6,7 @@ Dans ce modèle, la client s'authentifie auprès du serveur en lançant des tent
 
 Cette solution nécessite peu de ressource et est aisée à mettre en place, cependant une simple écoute du réseau permet de repérer le code permettant l'ouverture d'un port ce qui rend cette solution facilement attaquable.
 
-Par exemple, si la séquence de port à fournir au pare-feu afin de rendre le port \emph{E} du serveur joignable est [\emph{Port A, Port B, Port C, Port D}] , le client génère des paquets SYN sur ces ports :
+Par exemple, si la séquence de port à fournir au pare-feu afin de rendre le port \emph{E} du serveur joignable est [\emph{Port A, Port B, Port C, Port D}] , le client génère des paquets SYN sur ces ports dans l'ordre donné:
 \begin{figure}[h]
 
 \centerline{\includegraphics[scale=0.4]{portknocking1}}
