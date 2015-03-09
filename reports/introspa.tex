@@ -1,15 +1,14 @@
 Dans le cadre de notre étude du SPA, nous avons programmé un couple client serveur pour répondre aux exigences demandées par l'ouverture de ports dynamique.
 
-Nous allons vous présenter les différentes étapes que nous avons traversées pour rendre le programme robuste, c'est à dire afin que seul un client puisse ouvrir un port du firewall pour un court laps de temps.
+Nous allons vous présenter les différentes étapes que nous avons traversées pour rendre le programme robuste, c'est à dire afin que seul un client puisse ouvrir un port du pare-feu pour un court laps de temps.
 
 Ci-dessous un schéma de la topologie réseau mise en place.
 
-/!\\ Insérer schéma
+%\includegraphics[scale=0.5]{schem}
 
 4 machines sont présentes, le client SPA, le serveur SPA, un attaquant en man-in-the-middle et le serveur applicatif avec lequel le client veut discuter.
 
-Le but est donc l'ouverture d'un port du firewall situé sur la machine qui possède le serveur SPA via l'envoie d'un unique paquet SPA venant du client. L'attaquant qui voit l'intégralité de la communication entre le client et le serveur (qui est unilatérale) doit être incapable d'utiliser ces informations à son avantage.
-
-Pour cela, il est nécessaire de préserver l'intégrité et l'authenticité des données transmises au serveur SPA. En effet, l'attaquant ne doit pas pouvoir se faire passer pour le client sinon il aura la capacité de faire ouvrir au serveur des ports du pare-feu.
-De plus, l'intégrité des données doit aussi être préservée puisqu'il ne faut pas qu'un attaquant change les spécifications du client, il pourait sinon changer le numéro de port ouvert par exemple par un qui l'interesserait plus.
- 
+L'attaquant qui voit l'intégralité de la communication entre le client et le serveur (qui est unilatérale) doit être incapable d'utiliser ces informations à son avantage.
+Pour cela, il est nécessaire de préserver l'intégrité et l'authenticité des données transmises au serveur SPA. 
+En effet, l'attaquant ne doit pas pouvoir se faire passer pour le client sinon il aura la capacité de faire rendre le pare-feu plus \emph{fragile} en permettant le passage de paquets \emph{illicites} à destination du serveur.
+De plus, l'intégrité des données doit aussi être préservée puisqu'il ne faut pas qu'un attaquant change les spécifications du client, il pourrait sinon changer le numéro de port ou le protocole de transport autorisé par le pare-feu par exemple. 
