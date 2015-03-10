@@ -1,0 +1,13 @@
+\chapter{Perspectives d'évolution}
+
+Nous avons vu que notre implémentation satisfaisait un fonctionnement de base du principe de SPA.
+Cependant, nous avons noté quelques perspectives d'amélioration qui rendraient le tout plus robuste et complet.
+
+\section{Mise à jour des OTP}
+Dans une précédente partie, nous avons détaillé le choix de notre système de gestion des clefs a usages unique. 
+Celles-ci sont générées par une \emph{seed} et un compteur qui évolue à chaque envoie d'un paquet SPA.
+Nous faisons actuellement évoluer ce compteur de façon analogue pour chaque client.
+Ainsi, la connaissance à un moment donné de la \emph{seed} et du compteur pourrait permettre à n'importe quel autre partie ayant conscience du mécanisme d'évolution du compteur de déterminer la clef suivante.
+
+\section{Appel a la librairie Libnetfilter}
+En ce qui concerne l'intéraction concrète avec les règles iptables du pare-feu, nous utilisons des appels systèmes simples. Cependant, l'utilisation de librairies plus spécifiques telles que \emph{libnetfilter} pourrait sembler plus adapté.
