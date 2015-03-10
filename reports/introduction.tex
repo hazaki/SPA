@@ -1,9 +1,13 @@
 \chapter*{Introduction}
 
-Afin d'empêcher le scan de port d'un pare-feu protégeant un serveur applicatif, de nombreuses techniques ont vu le jour. En effet, posséder un pare-feu dont tous les ports sont fermés et ne s'ouvrent que lors d'échanges avec des clients approuvés permettrait d'amoindrir les attaques sur ce serveur.
+Le Single Packet Authorization est une technique de communication sécurisée qui permet de vérifier l'authenticité de tous clients désirant accéder à un service.
 
-Le but est donc de fermer par défaut les ports logiciels du pare-feu et mettre en place un mécanisme de reconnaissance des clients autorisés à interagir avec le serveur.
+Afin de permettre à un serveur applicatif de ne communiquer qu'avec des clients désirés, de nombreuses techniques ont vu le jour. 
 
-De plus, il existe une restriction supplémentaire qui est que le client doit pouvoir faire ouvrir un port au pare-feu via un unique paquet envoyé.
+En effet, posséder un pare-feu dont tous les ports sont fermés mais qui, pour une période donnée, permettrait des échanges avec des clients approuvés permettrait d'amoindrir les risques d'attaques sur ce serveur.
+
+Le but est de fermer tous les ports d'un pare-feu par défaut et de mettre en place un mécanisme de reconnaissance des clients autorisés à interagir avec le serveur qui auraient la possibilité de demander une ouverture de port.
+
+De plus, il existe une restriction supplémentaire qui est que le client doit pouvoir demander une ouverture de port au pare-feu via un unique paquet envoyé.
 
 Plusieurs modèles ont tentés de répondre à cette question, nous allons étudier les plus connus.
