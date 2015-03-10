@@ -1,8 +1,8 @@
 \chapter{Authenticité et Intégrité}
 
-Pour palier à la faiblesse du Port Knocking, et afin qu'une simple écoute du réseau ne suffise pas à mettre en péril ce schéma, la pérénité de cette méthode va reposer sur l'authentification des clients. En effet il est nécessaire de vérifier que l'acceptation d'un paquet par le pare-feu est bien effectuée par un client légitime.
+Pour palier à la faiblesse du Port Knocking, et afin qu'une simple écoute du réseau ne suffise pas à mettre en péril ce schéma, la pérénnité de cette méthode va reposer sur l'authentification des clients. En effet il est nécessaire de vérifier que l'acceptation d'un paquet par le pare-feu est bien effectuée par un client légitime.
 
-A contrario du port knocking qui supposait que seul un client légitime pouvait connaître la séquence de coups, ici l'authenticité va se faire grâce à des clés prépartagées. En effet, le serveur va partager une clé avec chacun des ses clients, chaque clé étant différente des autres. 
+A contrario du port knocking qui supposait que seul un client autorisé pouvait connaître la séquence de coups, ici l'authenticité va se faire grâce à des clés prépartagées. En effet, le serveur va partager une clé avec chacun des ses clients, chaque clé étant différente des autres. 
 Le client génère alors un paquet SPA chiffré avec cette clé, le pare-feu le déchiffre avec la même clé et détermine la légitimité de la requête.
 
 Si c'est le cas, le client sera aussi considéré comme authentifié auprès du serveur et il pourra communiquer avec lui sur le port fourni.
@@ -17,18 +17,18 @@ Par ailleurs, OFB est fragile vis-à-vis des attaques à clair connu et CTR est 
 Nous choisirons donc CBC.
 
 
-Nous désirons que le client puisse choisir le port qui sera ouvert, le protocole de transport utilisé (tcp ou udp) ainsi que le temps d'ouverture du port (en maintenant un temps maximal d'ouverture de port).
+Nous désirons que le client puisse choisir le port serveur avec lequel il veut communiquer, le protocole de transport utilisé (tcp ou udp) ainsi que le temps d'accès au port (en maintenant un temps maximal d'ouverture de port).
 
 \section{Champ \textbf{\emph{IP}} du paylaod}
 
-De plus, afin de s'assurer de l'authenticité de l'émeteur du paquet, celui-ci doit introduire son adresse IP dans le payload chiffré qui sera envoyé. Ainsi, en comparant cette donnée et le header du paquet ip, il sera possible de voir si les informations sont cohérentes et donc authentiques (un attaquant n'étant pas en mesure de fournir un chiffré de paylaod valide sans la clé adéquate). 
+De plus, afin de s'assurer de l'authenticité de l'émetteur du paquet, celui-ci doit introduire son adresse IP dans le payload chiffré qui sera envoyé. Ainsi, en comparant cette donnée et le header du paquet ip, il sera possible de voir si les informations sont cohérentes et donc authentiques (un attaquant n'étant pas en mesure de fournir un chiffré de paylaod valide sans la clé adéquate). 
 De plus,cette comparaison d'adresse nous permet de déterminer l'intégrité du message envoyé.
 En effet, un utilisateur légitime construit naturellement un paquet avec ces deux champs IP identiques. Un usurpateur pourra alors être démasqué si sa requête ne respecte pas cela.
 
 \section{\emph{\textbf{O}ne \textbf{T}ime \textbf{P}assword}}
-En sachant que la structure des messages est connue et que leur contenu peut l'être aussi (on ne prétend pas ici garder ces informations secrètes mais seulement authentique), il semble nécessaire de changer régulièrement de mot de passe pour que celui-ci ne soit pas affaibli par une attaque a clair connu par exemple.
+En sachant que la structure des messages est connue et que leur contenu peut l'être aussi (on ne prétend pas ici garder ces informations secrètes mais seulement authentiques), il semble nécessaire de changer régulièrement de mot de passe pour que celui-ci ne soit pas affaibli par une attaque a clair connu, par exemple.
 
-Nous utiliserons donc le mécanisme des OTP pour pallier à ce problème. En effet, le client aura une graine à partir de laquelle générer des clés à usage unique. De son côté le serveur aura une graine par client qu'il fera évoluer de la même façon.
+Nous utiliserons donc le mécanisme des OTP pour pallier à ce problème. En effet, le client aura une graine à partir de laquelle générer des clés à usage unique. De son côté le serveur aura une graine par client qu'il fera évoluer de la même façon que le client.
 \\
 Pour cela, plusieurs types d'OTP existent :
 \begin{itemize}
