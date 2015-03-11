@@ -1,0 +1,19 @@
+\chapter{Implémentation}
+
+Pour mettre en place cette méthode, nous avons développé une paire client-serveur SPA en langage C.
+
+La topologie utilisée lors du développement et des tests est un réseau de 4 machines virtuelles comme vu dans l'introduction de la partie 2.
+
+Dans un premier temps, nous avons eu besoin d'envoyer un paquet depuis le client vers le serveur, pour cela nous avons utilisé la libnet qui nous a permis de mettre en place une socket RAW, de créer l'encapsulation IP, UDP et de placer les données à envoyer.
+
+Pour récupérer ce paquet depuis le serveur, nous avons utilisé la libpcap qui nous a permis de filtrer les paquets SPA des autres (selon le port destination) puis des les traiter un par un.
+
+Dès que l'envoie et la réception de paquets bien formés a été faite, nous avons voulu être capable de chiffrer les données circulant sur le réseau. Pour ce faire, nous avons utilisés la librairie de chiffrement openSSL possédant une documentation complète.
+
+À cette étape, nous pouvions communiquer d'une machine à une autre en assurant l'authenticité de l'émetteur.
+
+Nous avons donc ajouter les champs nécessaires au bon fonctionnement de la méthode (introduction de la partie 2) et pour contrer le rejeu, nous avons utilisé la bibliothèque time.h afin de s'assurer que le temps utilisés ne patissent pas de problème de faisseaux horaires.
+
+Ensuite, nous avons implémenter les HMAC Based OTP grâce à la librairie openSSL dont nous avons utiliser la fonction de calcul de HMAC.
+
+Enfin, nous avons enregistré les informations nécessaires à l'utilisation de HOTP (graine, compteur, adresse ip) dans un fichier de configuration XML qui est lu et modifié grâce à la librairie libxml2.

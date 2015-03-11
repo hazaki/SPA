@@ -4,10 +4,10 @@ Le Single Packet Authorization est une technique de communication sécurisée qu
 
 Afin de permettre à un serveur applicatif de ne communiquer qu'avec des clients désirés, de nombreuses techniques ont vu le jour. 
 
-En effet, posséder un pare-feu dont tous les ports sont fermés mais qui, pour une période donnée, permettrait des échanges avec des clients approuvés permettrait d'amoindrir les risques d'attaques sur ce serveur.
+En effet, posséder un pare-feu imperméable à toute communication mais qui, pour une période donnée, accepterait des échanges avec des clients approuvés permettrait d'amoindrir les risques d'attaques sur ce serveur.
 
-Le but est de fermer tous les ports d'un pare-feu par défaut et de mettre en place un mécanisme de reconnaissance des clients autorisés à interagir avec le serveur qui auraient la possibilité de demander une ouverture de port.
+Le but est d'interdire toute communication vers le serveur applicatif avec le pare-feu et de mettre en place un mécanisme de reconnaissance des clients autorisés à interagir avec le serveur qui auraient la possibilité de demander l'ajout de règles permissives sur le pare-feu.
 
-De plus, il existe une restriction supplémentaire qui est que le client doit pouvoir demander une ouverture de port au pare-feu via un unique paquet envoyé.
+De plus, il existe une restriction supplémentaire qui est que le client doit pouvoir demander l'autorisation de communication via un unique paquet envoyé.
 
 Plusieurs modèles ont tentés de répondre à cette question, nous allons étudier les plus connus.
