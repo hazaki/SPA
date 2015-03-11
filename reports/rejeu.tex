@@ -4,18 +4,50 @@
 
 Dans un contexte de Single Packet Autorization, il est indispensable de vérifier qu'un paquet n'est pas issu du rejeu.
 
-En effet, dans un contexte où les One-Time-Password ne sont pas utilisés, il est possible pour un attaquant qui écoute le réseau d'enregistrer un paquet envoyé par un client légitime et le renvoyer dès qu'il souhaite une ouverture de port.
+En effet, à ce stade, il est possible pour un attaquant qui écoute le réseau d'enregistrer un paquet envoyé par un client légitime et le renvoyer dès qu'il souhaite une ouverture de port. Nous allons proposer deux solutions pour résoudre ce problème.
 
-Dans le but de résoudre ce problème, il est possible d'utiliser un horodatage. Le client envoie les informations précédement présentées auquelles sont ajoutées l'année, le mois, le jour et l'heure de création du paquet. Le serveur a une structure gérant le rejeu où il enregistrera, entre autres, l'heure de fermeture du port et le hachage du chiffré reçu. Lorsque l'heure de fermeture du port est arrivée, le paquet sort de la structure.
+\subsection{Détection par Horodatage}
+
+Dans le but de résoudre ce problème, il est possible d'utiliser un horodatage. Le client envoie les informations précédemment présentées auxquelles sont ajoutées l'année, le mois, le jour et l'heure de création du paquet. Le serveur a une structure gérant le rejeu où il enregistrera, entre autres, l'heure de fermeture du port et le hachage du chiffré reçu. Lorsque l'heure de fermeture du port est arrivée, le paquet sort de la structure.
 
 Deux possibilités d'attaques s'offrent à nous :
+
 \begin{itemize}
+
 \item L'attaquant rejoue un paquet alors que la règle du pare-feu est toujours active. Le serveur remarque que ce paquet a déjà été reçu puisque son haché est dans la structure.
+
 \item L'attaquant rejoue un paquet alors que la règle du pare-feu n'est plus active. Le serveur remarque que l'heure de la création du paquet ajouté au temps d'ouverture du port (donnant l'heure de fermeture du port) est déjà passée, ce paquet est donc ignoré.
+
 \end{itemize}
+
 \vspace{0.5cm}
 
-Une autre manière de faire est l'utilisation des One-Time-Password. Comme expliqué dans le chapitre 3, nous utilisons de HMAC Based OTP. Le mot de passe à utilisation unique dépend d'un compteur qui évolue de la même manière du côté du client et du serveur.
+\subsection{Détection par les \textbf{O}ne-\textbf{T}ime-\textbf{P}assword}
+
+Une autre manière de faire est l'utilisation des One-Time-Password. Ces outils cryptographiques permettent de faire évoluer un mot de passe statique afin que pour chaque chiffrage/déchiffrage, une clé différente soit utilisée. Ainsi, renvoyer un paquet qui a été chiffré avec une certaine clé et qui a déjà été reçu par le serveur sera déchiffré avec une autre clé et ne sera donc pas traité.
+
+C'est une mécanisme d'authentification forte puisqu'en plus de la graine que le serveur et le client partagent, ils devront avoir en commun un secret supplémentaire.
+
+Pour cela, plusieurs types d'OTP existent basés sur:
+
+\begin{itemize}
+
+\item \textbf{l'utilisation d'un compteur} : le client et le serveur partagent un compteur en commun. Ce compteur évolue à chaque authentification.
+
+\item \textbf{l'utilisation du temps} : le mot de passe créé à partir de la graine et de l'heure courante n'est valable que pendant une certaine durée.
+
+\item \textbf{l'utilisation de challenge} : le serveur communique des données aléatoire au client qui va créer l'OTP à partir de celui-ci. Une challenge sera envoyé pour chaque nouvel OTP.
+
+\end{itemize}
+
+\vspace{0.5cm}
+
+Dans le cadre du SPA, il faut qu'il n'y ait pas d'autre dialogue entre le client et le serveur SPA que celui déjà connu. Nous n'utiliserons pas l'OTP basé sur les challenges.
+
+Ainsi nous avons choisi d'utiliser des compteurs (H-MAC Based OTP). Le client et le serveur partagent une graine et un compteur, le mot de passe courant sera le résultat du hmac entre ces deux valeurs. A chaque nouveau paquet, le compteur évoluera. Voici la formule qui régit l'évolution des HTOP :
+
+\centerline{HOTP(K,C) = Truncate(HMAC-SHA-1(K,C))}
+
 Ainsi, si un attaquant rejoue un paquet, celui-ci sera déchiffré avec la clé courante du serveur qui n'est pas celle qui a servi à déchiffrer ce paquet. Celui-ci ne sera donc pas traité et le compteur du serveur n'évoluera pas pour rester synchronisé avec le client.
 
 \clearpage
@@ -23,10 +55,9 @@ Ainsi, si un attaquant rejoue un paquet, celui-ci sera déchiffré avec la clé 
 \section{DoS et DDoS}
 
 Les attaques de type déni de service ont pour but de rendre un service inaccesible voire entraîner son arrêt.
+
 Ces attaques peuvent être distribuées, c'est à dire que les orgines de cette attaque sont multiples.
 
-Pour contrer une attaque de déni de service, le serveur n'accepte pas plus d'un certain nombre de requêtes de la part d'un même client. Un unique client ne pourra donc pas saturer le serveur, toute requête supplémentaire de sa part ne sera pas traitée.
+Pour contrer une attaque de déni de service, le serveur n'accepte pas plus d'un certain nombre de requêtes de la part d'un même client. Un unique client ne pourra donc pas saturer le servur, toute requête supplémentaire de sa part ne sera pas traitée.
 
 Il n'est pas possible d'empêcher de rendre un service inaccessible lors d'une attaque de déni de service distribué, cependant, dans le but d'empêcher le plantage du serveur, un nombre total de requêtes traitées a été mis en place.
-
-
