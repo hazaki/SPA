@@ -43,16 +43,3 @@ Nous sommes donc, maintenant, capables de vérifier l'intégrité des données. 
  %http://fr.wikipedia.org/wiki/MD5
  
  
-%\section{\emph{\textbf{O}ne \textbf{T}ime \textbf{P}assword}}
-%En sachant que la structure des messages est connue et que leur contenu peut l'être aussi (on ne prétend pas ici garder ces informations secrètes mais seulement authentiques), il semble nécessaire de changer régulièrement de mot de passe pour que celui-ci ne soit pas affaibli par une attaque a clair connu, par exemple.
-
-%Nous utiliserons donc le mécanisme des OTP pour pallier à ce problème. En effet, le client aura une graine à partir de laquelle générer des clés à usage unique. De son côté le serveur aura une graine par client qu'il fera évoluer de la même façon que le client.
-%\\
-%Pour cela, plusieurs types d'OTP existent :
-%\begin{itemize}
-%\item Ceux basés sur \textbf{le temps}. Le client et le serveur doivent pour cela être synchronisé afin de déterminer simultanément la clé à utiliser.  
-%\item Ceux basés sur \textbf{des algorithmes mathématiques} qui créeront le nouveau mot de passe à partir du précédent ou d'un challenge.
-%\end{itemize}
-%Dans le cadre du SPA, il fallait qu'il n'y ait pas d'autre dialogue entre le client et pare-feu que celui déjà connu, ainsi nous avons choisi d'utiliser les HOTP. Le client et le serveur partagent une graine et un compteur, le mot de passe courant sera le résultat du hmac entre ces deux valeurs. A chaque nouveau paquet, le compteur évoluera.
-
-
