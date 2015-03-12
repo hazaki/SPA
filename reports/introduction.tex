@@ -1,6 +1,6 @@
 \chapter*{Introduction}
 
-Dans le cadre de la sécurisation de communication client-serveur, il peut être intéressant d'avoir un pare-feu serveur dont les règles sont modifiées dynamiquement.
+Dans le cadre de la sécurisation de communication client-serveur, il peut être intéressant d'avoir un pare-feu côté serveur dont les règles sont modifiées dynamiquement.
 
 Dans ce contexte, un client légitime demanderait une autorisation de communication avec serveur qui se traduirait par l'ajout de règles permissives sur le pare-feu.
 
@@ -8,20 +8,15 @@ Cette méthode nécessite d'authentifier ces clients afin de leur accorder des p
 
 Pour répondre à cette problématique, deux systèmes ont été imaginés.
 
-Le premier consiste à donner accés à un port du serveur applicatif à tous clients connaissant la séquence de tentative de connexion nécessaire à son accès. Cette séquence représente le secret partagé entre le serveur et le client.
-
+Le premier consiste à laisser l'accès à un port du serveur applicatif à tous clients connaissant une séquence de tentative de connexion particulière et nécessaire à son accès. Cette séquence représente le secret partagé entre le serveur et le client.
 Le secret du second mécanisme repose sur la présence de clé servant à un chiffrement symétrique.
 
+Dans le cadre du SPA, la vérification de l'authenticité et de l'intégrité  de la requête se fait grâce à ce système de clé alors que l'authenticité du \emph{Port Knocking} repose sur la connaissance d'une séquence adéquate. 
 
+Le but de cette démarche de recherche et d'implémentation va donc être d'apporter une solution respectant l'intégrité et l'authenticité en se basant sur le modèle SPA (la fragilité du \emph{Port Knoking} fasse au attaques en Man In The Middle le rendant trop fragile). 
 
-Le but est d'interdire toute communication vers le serveur applicatif avec le pare-feu et de mettre en place un mécanisme de reconnaissance des clients autorisés à interagir avec le serveur qui auraient la possibilité de demander l'ajout de règles permissives sur le pare-feu.
-
-
-
-
+Le principe général du SPA consiste à interdire toute communication vers le serveur applicatif avec le pare-feu et de mettre en place un mécanisme de reconnaissance des clients autorisés à interagir avec le serveur qui auraient la possibilité de demander l'ajout de règles permissives sur le pare-feu.
 
 De plus, il existe une restriction supplémentaire qui est que le client doit pouvoir demander l'autorisation de communication via un unique paquet envoyé.
 
-Plusieurs modèles ont tenté de permettre l'ajout et la suppression de règles de pare-feu de manière dynamique pour autoriser des clients. 
-
-Nous introduirons deux méthodes qui répondent à ce schéma puis nous nous focaliserons sur la Single Packet Authorization que nous implémenterons.
+Après une introduction de ces sytèmes, nous nous proposons de détailler le principe du SPA, sa résistance aux attaques (rejeu et DoS) ainsi que nos choix d'implémentation avant proposer des tests.
