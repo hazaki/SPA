@@ -22,8 +22,9 @@ Nous désirons que le client puisse choisir le port serveur avec lequel il veut 
 
 \section{Champ \textbf{\emph{IP}} du paylaod}
 
-De plus, afin de s'assurer de l'authenticité de l'émetteur du paquet, celui-ci doit introduire son adresse IP dans le champ de données chiffré. Ainsi, en comparant cette donnée et le header du paquet ip, il sera possible de voir si les informations sont cohérentes et donc authentiques (un attaquant n'étant pas en mesure de fournir un chiffré valide sans la clé adéquate). 
-un Utilisateur légitime construit naturellement un paquet avec ces deux champs IP identiques. Un usurpateur pourra alors être démasqué si sa requête ne respecte pas cela.
+De plus, afin de s'assurer de l'authenticité de l'émetteur du paquet, celui-ci doit introduire son adresse IP dans le champ de données chiffré. Ainsi, en comparant cette donnée et le header du paquet ip, il sera possible de voir si les informations sont cohérentes et donc authentiques (un attaquant n'étant pas en mesure de fournir un chiffré valide sans la clé adéquate).
+
+Un utilisateur légitime construit naturellement un paquet avec ces deux champs IP identiques. Un usurpateur pourra alors être démasqué si sa requête ne respecte pas cela.
 
 \section{Hachage}
 \begin{quotation}
@@ -38,7 +39,7 @@ Le système MD5, était considéré comme sûr avant que les chercheurs chinois,
 le système SHA-1 est, lui aussi, sensible aux collisions notamment à celles basées sur le paradoxe des anniversaires.
 Nous avons donc choisi SHA-256 plutôt que SHA-512 pour la taille restreinte du haché produit tout en sachant que le réel intérêt de ce haché est d'établir une simple somme de contrôle.\newline
 
-Nous hachons tous les champs de données de la requête et la concaténons à ceux-ci puis le tout sera chiffré afin de préserver l'intégrité des informations. Si le chiffré est changé, le haché ne correspondra plus aux champs de donnée.
+Nous hachons tous les champs de données de la requête et la concaténons à celle-ci puis le tout sera chiffré afin de préserver l'intégrité des données. Si le chiffré est changé, le haché ne correspondra plus aux champs de donnée.\\
 
 Nous avons mis en place un système permettant d'authentifier les requêtes arrivant au serveur SPA ainsi que vérifier l'intégrité de celles-ci, nous allons maintenant nous intéresser à contrer certains attaques supplémentaires.
  %http://fr.wikipedia.org/wiki/MD5
