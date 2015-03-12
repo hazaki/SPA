@@ -1,13 +1,27 @@
 \chapter*{Introduction}
 
-Le Single Packet Authorization est une technique de communication sécurisée qui permet de vérifier l'authenticité de tous clients désirant accéder à un service.
+Dans le cadre de la sécurisation de communication client-serveur, il peut être intéressant d'avoir un pare-feu serveur dont les règles sont modifiées dynamiquement.
 
-Afin de permettre à un serveur applicatif de ne communiquer qu'avec des clients désirés, de nombreuses techniques ont vu le jour. 
+Dans ce contexte, un client légitime demanderait une autorisation de communication avec serveur qui se traduirait par l'ajout de règles permissives sur le pare-feu.
 
-En effet, posséder un pare-feu imperméable à toute communication mais qui, pour une période donnée, accepterait des échanges avec des clients approuvés permettrait d'amoindrir les risques d'attaques sur ce serveur.
+Cette méthode nécessite d'authentifier ces clients afin de leur accorder des privilèges particuliers (accéder à un port donné du serveur applicatif pour une période restreinte).
+
+Pour répondre à cette problématique, deux systèmes ont été imaginés.
+
+Le premier consiste à donner accés à un port du serveur applicatif à tous clients connaissant la séquence de tentative de connexion nécessaire à son accès. Cette séquence représente le secret partagé entre le serveur et le client.
+
+Le secret du second mécanisme repose sur la présence de clé servant à un chiffrement symétrique.
+
+
 
 Le but est d'interdire toute communication vers le serveur applicatif avec le pare-feu et de mettre en place un mécanisme de reconnaissance des clients autorisés à interagir avec le serveur qui auraient la possibilité de demander l'ajout de règles permissives sur le pare-feu.
 
+
+
+
+
 De plus, il existe une restriction supplémentaire qui est que le client doit pouvoir demander l'autorisation de communication via un unique paquet envoyé.
 
-Plusieurs modèles ont tentés de répondre à cette question, nous allons étudier les plus connus.
+Plusieurs modèles ont tenté de permettre l'ajout et la suppression de règles de pare-feu de manière dynamique pour autoriser des clients. 
+
+Nous introduirons deux méthodes qui répondent à ce schéma puis nous nous focaliserons sur la Single Packet Authorization que nous implémenterons.
