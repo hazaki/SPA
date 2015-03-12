@@ -44,7 +44,7 @@ Pour cela, plusieurs types d'OTP existent basés sur:
 
 Dans le cadre du SPA, il faut qu'il n'y ait pas d'autre dialogue entre le client et le serveur SPA que celui déjà connu. Nous n'utiliserons pas l'OTP basé sur les challenges.
 
-Ainsi nous avons choisi d'utiliser des compteurs (H-MAC Based OTP). Le client et le serveur partagent une graine et un compteur, le mot de passe courant sera le résultat du hmac entre ces deux valeurs. A chaque nouveau paquet, le compteur évoluera.
+Nous avons choisi d'utiliser des compteurs (H-MAC Based OTP). Le client et le serveur partagent une graine et un compteur, le mot de passe courant sera le résultat du hmac entre ces deux valeurs. A chaque nouveau paquet, le compteur évoluera.
 
 Ainsi, si un attaquant rejoue un paquet, celui-ci sera déchiffré avec la clé courante du serveur qui n'est pas celle qui a servi à déchiffrer ce paquet. Celui-ci ne sera donc pas traité et le compteur du serveur n'évoluera pas pour rester synchronisé avec le client.
 
