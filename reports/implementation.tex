@@ -17,14 +17,14 @@ Dans un premier temps, nous avons eu besoin d'envoyer un paquet depuis le client
 
 \subsection{Open SSL}
 Afin d'authentifier cette demande, nous avons utilisé la librairie \emph{OpenSSL} possédant une documentation complète (voir bibliographie).
-Les HMAC Based OTP, elle aussi, sont gérés grâce à la librairie \emph{OpenSSL}. Plus précisément, nous avons utilisé la fonction de calcul \emph{HMAC} qu'elle contient.
+Les HMAC Based OTP, eux aussi, sont gérés grâce à la librairie \emph{OpenSSL}. Plus précisément, nous avons utilisé la fonction de calcul \emph{HMAC} qu'elle contient.
 
 \subsection{Libpcap}
 Pour récupérer ce paquet depuis le serveur, nous avons utilisé la librairie \emph{libpcap} qui nous a permis de filtrer les paquets afin de récupérer les \emph{SPA}. Nous avons pu différencier ces paquets grâce au fait qu'ils ont pour destination un port unique du pare-feu. Nous traitons ensuite ces requêtes une par une.
 
 \subsection{Time.h}
 Pour assurer une bonne gestion de l'horodatage aux client et au serveur SPA, nous avons utilisé la bibliothèque time.h
- afin de s'assurer que le temps utilisés ne patissent pas de problème de faisseaux horaires.
+ afin de s'assurer que le temps utilisés ne pâtissent pas de problème de fuseaux horaires.
 
 \subsection{LibXML2}
 
@@ -37,4 +37,4 @@ Ce fichier contient :
 
 \subsection{Structure de connections actives}
 
-Contrairement au fichier XML, nous souhaitons que le serveur garde en mémoire les connections actives. Nous utilisons donc une structure qui contient la liste des clients authentifié possédant en même temps une autorisation de communication particulière avec le serveur applicatif. Nous avons ainsi implémenter une liste chainée contenant, dans chaque cellule, des informations sur la connexion et sur le client qui en est à l'origine tout en permettant d'ajouter, de modifier ou de supprimer une entrée.
+Contrairement au fichier XML, nous souhaitons que le serveur garde en mémoire les connections actives. Nous utilisons donc une structure qui contient la liste des clients authentifié possédant en même temps une autorisation de communication particulière avec le serveur applicatif. Nous avons ainsi implémenter une liste chaînée contenant, dans chaque cellule, des informations sur la connexion et sur le client qui en est à l'origine tout en permettant d'ajouter, de modifier ou de supprimer une entrée.
