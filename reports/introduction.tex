@@ -1,10 +1,12 @@
 \chapter*{Introduction}
 
-Dans le cadre de la sécurisation de communication client-serveur, il peut être intéressant d'avoir un pare-feu côté serveur dont les règles sont modifiées dynamiquement.
+Dans le cadre de la sécurisation de communication client-serveur, il peut être intéressant d'avoir un pare-feu côté serveur dont les règles sont modifiées dynamiquement afin que toute personne ne soit pas capable de communiquer avec sans être authentifié.
 
-Dans ce contexte, un client légitime demanderait une autorisation de communication avec serveur qui se traduirait par l'ajout de règles permissives sur le pare-feu.
+Dans ce contexte, un client légitime demanderait une autorisation de communication avec le serveur qui se traduirait par l'ajout de règles permissives sur le pare-feu.
 
 Cette méthode nécessite d'authentifier ces clients afin de leur accorder des privilèges particuliers (accéder à un port donné du serveur applicatif pour une période restreinte).
+
+Cette technique est une sécurité supplémentaire que l'on ajoute à celles déjà connues, elle n'a pas vocation à remplacer d'autres méthodes mais à s'y ajouter. Ainsi, si la sécurité de cette méthode est malmenée, l'attaquant se retrouve face à une architecture réseau sécurisée.
 
 Pour répondre à cette problématique, deux systèmes ont été imaginés.
 
