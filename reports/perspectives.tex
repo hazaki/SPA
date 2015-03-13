@@ -15,3 +15,4 @@ En ce qui concerne l'interaction concrète avec les règles iptables du pare-feu
 \section{Gestion du NAT}
 Dans le cadre spécifique de la modification des en-têtes \emph{IP} par le procédé du NAT, un problème majeur se pose.
 En effet, notre système devient inopérant étant donné que le serveur SPA va déceler deux adresses \emph{IP} différentes dans un même paquet (une dans l'en-tête \emph{IP} correspondant à l'adresse de la passerelle NAT et l'autre dans le champs de donné chiffré et créé par le client demandeur).
+Une solution aurait été d'authentifier un utilisateur par un identifiant unique (comme un nom d'utilisateur) et que le serveur connaissent les correspondances IP publique - nom d'utilisateur.
