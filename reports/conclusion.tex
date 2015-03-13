@@ -1,19 +1,27 @@
 \chapter*{Conclusion}
+
 En considérant les services d'un serveur applicatif apportés à un ensemble de clients, nous avons étudié un moyen de sécuriser et de légitimer les éventuelles demandes des clients.
+
 Nous nous sommes donc souciés du moyen d'attribuer dynamiquement des autorisations de communication \emph{client}/\emph{serveur applicatif}. Pour cela nous avons étudié de façon détaillée une solution basée sur le principe de \emph{Single Packet Authorization}.
 
-Ainsi, un client désigné génère un paquet permettant de l'authentifier par un clé symétrique partagée avec un pare-feu (serveur SPA). Nous supposons donc ici que seuls un client et ce pare-feu ont la possibilité de chiffrer et déchiffrer les requêtes avec une telle clé. Le client va donc chiffrer sa demande. S'il est authentifié, l'intégrité de sa demande est vérifiée par la présence d'un motif (l'adresse IP) fixe présent dans le champs de données du paquet SPA envoyé.
+%Ainsi, un client désigné génère un paquet permettant de l'authentifier par un clé symétrique partagée avec un pare-feu (serveur SPA). Nous supposons donc ici que seuls un client et ce pare-feu ont la possibilité de chiffrer et déchiffrer les requêtes avec une telle clé. Le client va donc chiffrer sa demande. S'il est authentifié, l'intégrité de sa demande est vérifiée par la présence d'un motif (l'adresse IP) fixe présent dans le champs de données du paquet SPA envoyé.
 
-Ce concept est aussi validé grâce à la vérification d'un haché constituant un résumé unique des données utiles (port demandé, temps, etc...). L'autre intérêt d'un tel haché est sont caractère supposé \emph{"unique"} qui permet au serveur de les différencier et d'éviter les attaques par rejeu.
+%Ce concept est aussi validé grâce à la vérification d'un haché constituant un résumé unique des données utiles (port demandé, temps, etc...). L'autre intérêt d'un tel haché est sont caractère supposé \emph{"unique"} qui permet au serveur de les différencier et d'éviter les attaques par rejeu.
 
-Une fois l'intégrité de sa demande vérifiée, il peut accéder au port logiciel d'un serveur applicatif, en passant par le pare-feu qui lui accorde ce laisser-passer pour une période de 30 secondes maximum.
+%Une fois l'intégrité de sa demande vérifiée, il peut accéder au port logiciel d'un serveur applicatif, en passant par le pare-feu qui lui accorde ce laisser-passer pour une période de 30 secondes maximum.
 
-En outre, la génération de mot passe unique à chaque requête nous permet de renforcer le système de chiffrement, en complexifiant la clé, et donc, en même temps, de dissimuler davantage le secret partagé.
-Le modèle ainsi produit correspond aux exigences, en terme de sécurité, que le principe du SPA contient.
+%En outre, la génération de mot passe unique à chaque requête nous permet de renforcer le système de chiffrement, en complexifiant la clé, et donc, en même temps, de dissimuler davantage le secret partagé.
+%Le modèle ainsi produit correspond aux exigences, en terme de sécurité, que le principe du SPA contient.
 
-Cependant, comme nous l'avons vu, certaines améliorations pourraient être apportées. Nous laissant supposer que d'autre perspectives sont envisageables.
+%Cependant, comme nous l'avons vu, certaines améliorations pourraient être apportées. Nous laissant supposer que d'autre perspectives sont envisageables.
 
-Par exemple, dans le contexte général d'un mécanisme d'autorisation d'accès dynamique, nous avons écarté le \emph{Port Knocking} pour des questions d'authenticité et de faiblesse fasse au rejeu.
-Une autre façon de gérer ce système aurait pu être de renforcer l'authenticité du procédé par un prépartage d'une ou plusieurs clés entre le pare-feu et le client. Par la suite, les requêtes de \emph{Port Knocking} seraient authentifiées. L'intégrité pourrait être établie avec un système de hachage et ainsi le rejeu évité.
-On en reviendrait alors à un procédé proche de celui du SPA tout en considérant que les données utiles sont secrète ,et vouée à le rester, contrairement au SPA.
+%Par exemple, dans le contexte général d'un mécanisme d'autorisation d'accès dynamique, nous avons écarté le \emph{Port Knocking} pour des questions d'authenticité et de faiblesse fasse au rejeu.
+%Une autre façon de gérer ce système aurait pu être de renforcer l'authenticité du procédé par un prépartage d'une ou plusieurs clés entre le pare-feu et le client. Par la suite, les requêtes de \emph{Port Knocking} seraient authentifiées. L'intégrité pourrait être établie avec un système de hachage et ainsi le rejeu évité.
+%On en reviendrait alors à un procédé proche de celui du SPA tout en considérant que les données utiles sont secrète ,et vouée à le rester, contrairement au SPA.
+
+Cette méthode est un niveau de sécurité supplémentaire dans une architecture réseau. 
+
+En effet, un attaquant scannant un réseau ne détecterait pas un service tournant si aucune communication est en cours, c'est à dire si aucun clien n'a demandé de changement de règles au pare-feu pour accéder au service.
+
+Cette technique est donc utilisable par toute zone démilitarisée et est un gain conséquent de sécurité.
 
