@@ -11,3 +11,7 @@ Ainsi, la connaissance à un moment donné de la \emph{seed} et du compteur pour
 
 \section{Appel a la librairie Libnetfilter}
 En ce qui concerne l'interaction concrète avec les règles iptables du pare-feu, nous utilisons des appels systèmes simples. Cependant, l'utilisation d'une librairie plus spécifique telle que \emph{libnetfilter} serait plus adaptée.
+
+\section{Gestion du NAT}
+Dans le cadre spécifique de la modification des en-têtes \emph{IP} par le procédé du NAT, un problème majeur se pose.
+En effet, notre système devient inopérant étant donné que le serveur SPA va déceler deux adresses \emph{IP} différentes dans un même paquet (une dans l'en-tête \emph{IP} correspondant à l'adresse de la passerelle NAT et l'autre dans le champs de donné chiffré et créé par le client demandeur).

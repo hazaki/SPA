@@ -4,11 +4,11 @@
 
 Dans un contexte de Single Packet Autorization, il est indispensable de vérifier qu'un paquet n'est pas issu du rejeu.
 
-En effet, à ce stade, il est possible pour un attaquant qui écoute le réseau d'enregistrer un paquet envoyé par un client légitime et le renvoyer dès qu'il souhaite une ouverture de port. Nous allons proposer deux solutions pour résoudre ce problème.
+En effet, à ce stade, il est possible pour un attaquant qui écoute le réseau d'enregistrer un paquet envoyé par un client légitime et le renvoyer dès qu'il souhaite créer une ouverture de port. Nous allons proposer deux solutions pour résoudre ce problème.
 
 \subsection{Détection par Horodatage}
 
-Dans le but de résoudre ce problème, il est possible d'utiliser un horodatage. Le client envoie les informations précédemment présentées auxquelles sont ajoutées l'année, le mois, le jour et l'heure de création du paquet. Le serveur a une structure gérant le rejeu où il enregistrera, entre autres, l'heure de fermeture du port et le hachage du chiffré reçu. Lorsque l'heure de fermeture du port est arrivée, le paquet sort de la structure.
+Dans le but de résoudre ce problème, il est possible d'utiliser un horodatage. Le client envoie les informations précédemment présentées auxquelles sont ajoutées l'année, le mois, le jour et l'heure de création du paquet. Le serveur a une structure gérant le rejeu où il enregistrera, entre autres, l'heure de fermeture du port et le hachage des données reçues. Lorsque l'heure de fermeture du port est arrivée, le paquet est supprimé de la structure.
 
 Deux possibilités d'attaques s'offrent à nous :
 
@@ -32,7 +32,7 @@ Pour cela, plusieurs types d'OTP existent basés sur:
 
 \begin{itemize}
 
-\item \textbf{l'utilisation d'un compteur} : le client et le serveur partagent un compteur en commun. Ce compteur évolue à chaque authentification.
+\item \textbf{l'utilisation d'un compteur} : le client et le serveur partagent un compteur en commun. Ce compteur évolue à chaque authentification, de façon analogue pour le client et le serveur.
 
 \item \textbf{l'utilisation du temps} : le mot de passe créé à partir de la graine et de l'heure courante n'est valable que pendant une certaine durée.
 
@@ -44,7 +44,7 @@ Pour cela, plusieurs types d'OTP existent basés sur:
 
 Dans le cadre du SPA, il faut qu'il n'y ait pas d'autre dialogue entre le client et le serveur SPA que celui déjà connu. Nous n'utiliserons pas l'OTP basé sur les challenges.
 
-Nous avons choisi d'utiliser des compteurs (H-MAC Based OTP). Le client et le serveur partagent une graine et un compteur, le mot de passe courant sera le résultat du hmac entre ces deux valeurs. A chaque nouveau paquet, le compteur évoluera.
+Nous avons choisi d'utiliser des compteurs (H-MAC Based OTP). Le client et le serveur partagent une graine et un compteur, le mot de passe courant sera le résultat du hmac entre ces deux valeurs. A chaque nouveau paquet, le compteur évoluera. Nous avons choisi ce procédé plutôt que celui basé sur le temps pour des raison de facilité d'implémentation.
 
 Ainsi, si un attaquant rejoue un paquet, celui-ci sera déchiffré avec la clé courante du serveur qui n'est pas celle qui a servi à déchiffrer le paquet rejoué. Celui-ci ne sera donc pas traité et le compteur du serveur n'évoluera pas pour rester synchronisé avec le client.
 

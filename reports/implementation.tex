@@ -36,5 +36,4 @@ Ce fichier contient :
 \end{itemize}
 
 \subsection{Structure de connections actives}
-
-Contrairement au fichier XML, nous souhaitons que le serveur garde en mémoire les connections actives. Nous utilisons donc une structure qui contient la liste des clients authentifié possédant en même temps une autorisation de communication particulière avec le serveur applicatif. Nous avons ainsi implémenter une liste chaînée contenant, dans chaque cellule, des informations sur la connexion et sur le client qui en est à l'origine tout en permettant d'ajouter, de modifier ou de supprimer une entrée.
+En plus du fichier XML, nous souhaitons que le serveur garde en mémoire les connections actives afin d'éviter les lectures et écritures successive sur le fichier XML. Nous utilisons donc une structure qui contient la liste des clients authentifiés possédant en même temps une autorisation de communication particulière avec le serveur applicatif. Nous avons ainsi implémenter une liste chaînée contenant, dans chaque cellule, des informations sur la connexion et sur le client qui en est à l'origine tout en permettant d'ajouter, de modifier ou de supprimer des entrées.
