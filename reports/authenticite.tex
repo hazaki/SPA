@@ -1,10 +1,10 @@
 \chapter{Authenticité et Intégrité}
 Après avoir présenté le procédé, nous allons détailler davantage les outils utilisés pour le satisfaire.
 
-Pour palier à la faiblesse du \emph{Port Knocking}, et afin qu'une simple écoute du réseau ne suffise pas à mettre en péril ce schéma, la pérénnité de cette méthode va reposer sur l'authentification des clients. En effet il est nécessaire de vérifier que l'acceptation d'un paquet par le pare-feu est bien effectuée par un client légitime.
+Pour palier à la faiblesse du \emph{Port Knocking}, et afin qu'une simple écoute du réseau ne suffise pas à mettre en péril ce schéma, la pérennité de cette méthode va reposer sur l'authentification des clients partageant chacun une clé différente avec le serveur. En effet il est nécessaire de vérifier que l'acceptation d'un paquet par le pare-feu est bien effectuée par un client légitime.
 
 A contrario du \emph{Port Knocking} qui supposait que seul un client autorisé pouvait connaître la séquence de coups, ici l'authenticité va se faire grâce à des clés prépartagées. En effet, le serveur va partager une clé avec chacun des ses clients, chaque clé étant différente des autres. 
-Le client génère alors un paquet SPA chiffré avec cette clé et le serveur SPA le déchiffre avec la même clé. Il détermine la légitimité de la requête et si les champs sont valides, l'intégrité grâce au système de hachage
+Le client génère alors un paquet SPA chiffré avec cette clé et le serveur SPA le déchiffre avec cette même clé. Il détermine la légitimité de la requête, et si les champs sont valides, l'intégrité grâce au système de hachage.
 
 Si la demande est valide, le client sera considéré comme authentifié auprès du serveur et il pourra communiquer avec lui sur le port fourni.
 
@@ -13,9 +13,7 @@ Si la demande est valide, le client sera considéré comme authentifié auprès 
 Pour le chiffrement, nous utiliserons le standard du chiffrement symétrique, AES. 
 Sachant que nos données à chiffrer sont de taille limitée, nous n'utiliserons pas un mode de chiffrement qui se comporte comme un chiffrement par flux.
 De plus, nous savons que ECB connait des vulnérabilités quant à l'intégrité et la protection des données puisqu'il est sensible aux attaques par répétition (deux blocs avec le même contenu seront chiffrés de la même manière).
-%Par ailleurs, OFB est fragile vis-à-vis des attaques à clair connu et CTR est fragile si l'attaquant connait l'IV (ce qui sera le cas ici étant donné que celui-ci sera envoyé en clair).
 Nous choisirons donc CBC.
-
 
 Nous désirons que le client puisse choisir le port serveur avec lequel il veut communiquer, le protocole de transport utilisé (tcp ou udp) ainsi que le temps d'accès au port (en maintenant un temps maximal d'ouverture de port).
 
@@ -38,9 +36,6 @@ Le système MD5, était considéré comme sûr avant que les chercheurs chinois,
 le système SHA-1 est, lui aussi, sensible aux collisions notamment à celles basées sur le paradoxe des anniversaires.
 Nous avons donc choisi SHA-256 plutôt que SHA-512 pour la taille restreinte du haché produit tout en sachant que le réel intérêt de ce haché est d'établir une simple somme de contrôle.\newline
 
-Nous calculons, ensuite, un haché de ces données et concaténons les deux (pour l'intégrité) puis le tout sera chiffré afin de préserver l'authenticité du paquet ainsi produit.\\
+Nous calculons, ensuite, un haché des champs de données et le concaténons à celui-ci afin d'assurer l'intégrité des données puis le tout sera chiffré afin de préserver l'authenticité du paquet ainsi produit.\\
 
 Nous avons mis en place un système permettant d'authentifier les requêtes arrivant au serveur SPA ainsi que vérifier l'intégrité de celles-ci, nous allons maintenant nous intéresser aux façons de contrer certains attaques, notamment le rejeu.
- %http://fr.wikipedia.org/wiki/MD5
- 
- 

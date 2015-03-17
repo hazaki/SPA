@@ -1,12 +1,12 @@
 \chapter*{Introduction}
 
-Dans le cadre de la sécurisation de communication client-serveur, il peut être intéressant d'avoir un pare-feu côté serveur dont les règles sont modifiées dynamiquement afin que toute personne ne soit pas capable de communiquer avec, sans être authentifié.
+Dans le cadre de la sécurisation de communication client-serveur, il peut être intéressant d'avoir un pare-feu côté serveur dont les règles sont modifiées dynamiquement afin que toute personne ne soit pas capable de communiquer avec celui-ci, sans être authentifié.
 
 Dans ce contexte, un client légitime demanderait une autorisation de communication avec le serveur qui se traduirait par l'ajout de règles permissives sur le pare-feu.
 
 Cette méthode nécessite d'authentifier ces clients afin de leur accorder des privilèges particuliers (accéder à un port donné du serveur applicatif pour une période restreinte).
 
-Cette technique est une sécurité supplémentaire que l'on ajoute à celles déjà connues, elle n'a pas vocation à remplacer d'autres méthodes mais à s'y ajouter. Ainsi, si la sécurité de cette méthode est malmenée, l'attaquant se retrouve face à une architecture réseau sécurisée.
+Cette technique est une sécurité supplémentaire que l'on ajoute à celles déjà connues, elle n'a pas vocation à remplacer d'autres méthodes mais à s'y ajouter. Ainsi, si la sécurité de cette méthode est mise à mal, l'attaquant se retrouve face à une architecture réseau sécurisée.
 
 Pour répondre à cette problématique, deux systèmes ont été imaginés.
 
@@ -15,9 +15,9 @@ Le premier, le \emph{Port Knocking}, consiste  à laisser l'accès à un port du
 Le secret du second mécanisme, le \emph{SPA} repose sur la présence de clés servant à un chiffrement symétrique.
 Dans ce cadre, la vérification de l'authenticité et de l'intégrité  de la requête se fait grâce à ce système de clé alors que l'authenticité du \emph{Port Knocking} repose sur la connaissance d'une séquence adéquate. 
 
-Le but de cette démarche de recherche et d'implémentation va donc être d'apporter une solution respectant l'intégrité et l'authenticité en se basant sur le modèle SPA (la fragilité du \emph{Port Knoking} fasse au attaques en Man In The Middle le rendant trop fragile). 
+Le but de cette démarche de recherche et d'implémentation va donc être d'apporter une solution respectant l'intégrité et l'authenticité en se basant sur le modèle SPA (la fragilité du \emph{Port Knoking} face au attaques en Man In The Middle le rendant trop fragile). 
 
-Le principe général du SPA consiste à interdire toute communication vers le serveur applicatif avec le pare-feu et de mettre en place un mécanisme de reconnaissance des clients autorisés à interagir avec le serveur qui auraient la possibilité de demander l'ajout de règles permissives sur le pare-feu.
+Le principe général du SPA consiste à interdire toute communication vers le serveur applicatif grâce au pare-feu et de mettre en place un mécanisme de reconnaissance des clients autorisés à interagir avec le serveur qui auraient la possibilité de demander l'ajout de règles permissives sur le pare-feu.
 
 De plus, le client ne peut générer qu'un seul paquet pour formuler sa demande (principe du \emph{Single Packet Authorization}).
 
