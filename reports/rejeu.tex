@@ -26,7 +26,7 @@ Deux possibilités d'attaques s'offrent à nous :
 
 Une autre manière de faire est l'utilisation des One-Time-Password. Ces outils cryptographiques permettent de faire évoluer un mot de passe statique afin que pour chaque chiffrage/déchiffrage, une clé différente soit utilisée. Ainsi, renvoyer un paquet qui a été chiffré avec une certaine clé et qui a déjà été reçu par le serveur sera déchiffré avec une autre clé et ne sera donc pas traité.
 
-C'est une mécanisme d'authentification forte puisqu'en plus de la graine que le serveur et le client partagent, ils devront avoir en commun un secret supplémentaire.\\
+C'est un mécanisme d'authentification forte puisqu'en plus de la graine que le serveur et le client partagent, ils devront avoir en commun un secret supplémentaire.\\
 
 Pour cela, plusieurs types d'OTP existent basés sur:
 
@@ -44,7 +44,7 @@ Pour cela, plusieurs types d'OTP existent basés sur:
 
 Dans le cadre du SPA, il faut qu'il n'y ait pas d'autre dialogue entre le client et le serveur SPA que celui déjà connu. Nous n'utiliserons pas l'OTP basé sur les challenges.
 
-Nous avons choisi d'utiliser des compteurs (H-MAC Based OTP). Le client et le serveur partagent une graine et un compteur, le mot de passe courant sera le résultat du hmac entre ces deux valeurs. A chaque nouveau paquet, le compteur évoluera. Nous avons choisi ce procédé plutôt que celui basé sur le temps pour des raison de facilité d'implémentation.
+Pour faciliter l'implémentation, nous avons choisi d'utiliser des compteurs (H-MAC Based OTP). Le client et le serveur partagent une graine et un compteur, le mot de passe courant sera le résultat du hmac entre ces deux valeurs. A chaque nouveau paquet, le compteur évoluera. 
 
 Ainsi, si un attaquant rejoue un paquet, celui-ci sera déchiffré avec la clé courante du serveur qui n'est pas celle qui a servi à déchiffrer le paquet rejoué. Celui-ci ne sera donc pas traité et le compteur du serveur n'évoluera pas pour rester synchronisé avec le client.
 
